@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vista Veedor · Seguimiento Obstétrico · Hospital Colonia El Simbolar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-app: #f3f7fa;
+      --bg-card: #ffffff;
+      --bg-soft: #f5fafd;
+      --primary: #02677d;
+      --primary-dark: #014b5b;
+      --primary-light: #e6f4f7;
+      --text-main: #102438;
+      --text-muted: #52677a;
+      --border: #d7e4ee;
+      --danger-bg: #fee2e2;
+      --danger-text: #b91c1c;
+      --warn-bg: #fef3c7;
+      --warn-text: #92400e;
+      --ok-bg: #dcfce7;
+      --ok-text: #166534;
+      --shadow: 0 6px 20px rgba(2, 103, 125, 0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.45;
+    }
+    h1, h2, h3, .brand-title, .btn, th { font-family: 'Montserrat', sans-serif; }
+    .topbar {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: #fff;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 4px 16px rgba(1, 75, 91, 0.22);
+    }
+    .topbar-inner {
+      max-width: 1360px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand-title { font-size: 1.1rem; font-weight: 800; }
+    .brand-sub { font-size: 0.78rem; opacity: 0.9; margin-top: 2px; }
+    .container { max-width: 1360px; margin: 20px auto; padding: 0 16px 48px; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+    .kpi-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+    .kpi-val { font-family: 'Montserrat', sans-serif; font-size: 1.65rem; font-weight: 800; color: var(--primary-dark); margin-top: 4px; }
+    .kpi-val.alert { color: var(--danger-text); }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    label { display: block; font-size: 0.76rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+    input, select {
+      width: 100%;
+      padding: 9px 11px;
+      min-height: 40px;
+      border: 1px solid #c5d7e5;
+      border-radius: 10px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9rem;
+      background: #fff;
+      color: var(--text-main);
+    }
+    .quick-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .chip-btn {
+      background: #fff;
+      color: var(--text-main);
+      border: 1px solid #c5d7e5;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .chip-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn {
+      border: none;
+      border-radius: 9px;
+      padding: 8px 12px;
+      min-height: 36px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+    .btn-light { background: #fff; color: var(--primary-dark); }
+    .btn-outline { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.35); }
+    .btn-wa { background: #16a34a; color: #fff; }
+    .btn-wa-alert { background: #dc2626; color: #fff; }
+    .btn-disabled { opacity: 0.45; pointer-events: none; }
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .b-retraso { background: var(--danger-bg); color: var(--danger-text); }
+    .b-proxima { background: var(--warn-bg); color: var(--warn-text); }
+    .b-aldia { background: var(--ok-bg); color: var(--ok-text); }
+    .b-sinfecha { background: #e2e8f0; color: #475569; }
+    .b-alto { background: var(--danger-bg); color: var(--danger-text); }
+    .b-bajo { background: var(--ok-bg); color: var(--ok-text); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: var(--bg-soft); }
+    tbody tr.row-delayed { background: #fff5f5; }
+    tbody td { padding: 10px 12px; border-bottom: 1px solid #e6eff5; vertical-align: middle; }
+    .mobile-cards { display: none; }
+    .m-card {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+    .m-card.delayed { border-color: #fca5a5; background: #fff8f8; }
+    .m-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 10px; font-size: 0.82rem; margin: 8px 0 10px; }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+      display: none; align-items: center; justify-content: center; padding: 14px; z-index: 50;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: #fff; border-radius: 14px; max-width: 560px; width: 100%; padding: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .b-termino { background: #e0f2fe; color: #0369a1; }
+    .b-prolongada { background: #fee2e2; color: #b91c1c; font-weight: 800; }
+    .b-pretermino { background: #f1f5f9; color: #475569; }
+
+    @media (max-width: 760px) {
+      .desktop-wrap { display: none; }
+      .mobile-cards { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <div class="brand-title">Vista Veedor · Seguimiento Obstétrico (Solo Lectura)</div>
+        <div class="brand-sub">Hospital Colonia El Simbolar · Control de retrasos, inasistencias y próxima consulta</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <span id="lastCheckLabel" style="font-size:0.78rem; opacity:0.92;">Actualizado: —</span>
+        <button class="btn btn-light" onclick="loadVeedorData()">⟳ Actualizar</button>
+        <button class="btn btn-outline" onclick="openCfgModal()">⚙ Fuente</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Embarazadas Activas</div>
+        <div class="kpi-val" id="kpiTotal">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Con Retraso / Ausencia</div>
+        <div class="kpi-val alert" id="kpiRetraso">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Próximos 7 Días</div>
+        <div class="kpi-val" id="kpiProximas">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Al Día</div>
+        <div class="kpi-val" id="kpiAlDia">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="filters-grid">
+        <div>
+          <label for="fDni">Buscar por DNI</label>
+          <input type="text" id="fDni" inputmode="numeric" placeholder="DNI..." oninput="renderVeedor()" />
+        </div>
+        <div>
+          <label for="fNombre">Apellido y Nombre</label>
+          <input type="text" id="fNombre" placeholder="Nombre o apellido..." oninput="renderVeedor()" />
+        </div>
+        <div>
+          <label for="fRiesgo">Riesgo</label>
+          <select id="fRiesgo" onchange="renderVeedor()">
+            <option value="TODOS">Todos</option>
+            <option value="ALTO">Alto Riesgo</option>
+            <option value="BAJO">Bajo Riesgo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="quick-bar">
+        <button type="button" class="chip-btn active" data-mode="TODOS" onclick="setFilterMode('TODOS')">Todas las activas</button>
+        <button type="button" class="chip-btn" data-mode="RETRASO" onclick="setFilterMode('RETRASO')">Solo retraso / ausencia</button>
+        <button type="button" class="chip-btn" data-mode="PROXIMAS" onclick="setFilterMode('PROXIMAS')">Vencen en ≤ 7 días</button>
+        <button type="button" class="chip-btn" data-mode="TERMINO" onclick="setFilterMode('TERMINO')">A término (≥ 37s)</button>
+        <button type="button" class="chip-btn" data-mode="LIMITE_41" onclick="setFilterMode('LIMITE_41')">Límite ≥ 41s</button>
+        <button type="button" class="chip-btn" data-mode="SIN_TEL" onclick="setFilterMode('SIN_TEL')">Sin teléfono</button>
+      </div>
+
+      <div class="table-wrap desktop-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>DNI</th>
+              <th>Apellido y Nombre</th>
+              <th>EG</th>
+              <th>Término</th>
+              <th>Riesgo</th>
+              <th>Últ. Control</th>
+              <th>Próx. Consulta</th>
+              <th>Estado al Visualizar</th>
+              <th>Teléfono</th>
+              <th>Aviso WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody id="veedorTbody"></tbody>
+        </table>
+      </div>
+
+      <div class="mobile-cards" id="veedorMobile"></div>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="cfgModal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="color:var(--primary-dark);">Configuración de Lectura</h3>
+        <button class="btn" onclick="closeCfgModal()">✕</button>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label for="cfgUrl">URL Web App Google Sheets (/exec)</label>
+        <input type="url" id="cfgUrl" />
+      </div>
+      <div style="margin-bottom:14px;">
+        <label for="cfgKey">Clave de acceso</label>
+        <input type="text" id="cfgKey" />
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button class="btn" style="background:#e2e8f0;" onclick="closeCfgModal()">Cancelar</button>
+        <button class="btn btn-wa" onclick="saveCfg()">Guardar y Cargar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbyhT_P5Gzplas2jFwB_MvHNfD8qDYyOnI0xpbZem-qR2CiW4ZbF0MalbN_t2pRpd8rECg/exec";
+    const DEFAULT_KEY = "REMEDIAR07089";
+    const STORAGE_KEY = "veedor_obst_2027_v1";
+
+    let cfg = { url: DEFAULT_URL, key: DEFAULT_KEY };
+    let pacientes = [];
+    let filterMode = "TODOS";
+
+    function parseDateFlexible(val) {
+      if (!val) return null;
+      const str = String(val).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        const [y, m, d] = str.split("-").map(Number);
+        return new Date(y, m - 1, d);
+      }
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
+        const [d, m, y] = str.split("/").map(Number);
+        return new Date(y, m - 1, d);
+      }
+      const dt = new Date(str);
+      return isNaN(dt.getTime()) ? null : dt;
+    }
+
+    function diffDays(a, b) {
+      const da = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+      const db = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+      return Math.round((db - da) / 86400000);
+    }
+
+    function evalScheduleStatus(pac) {
+      const proxDate = parseDateFlexible(pac.PROXIMA_CONSULTA);
+      if (!proxDate) {
+        return { kind: "SIN_FECHA", daysDelay: 0, label: "SIN PRÓX. FECHA", cls: "b-sinfecha" };
+      }
+      const hoy = new Date();
+      const delta = diffDays(hoy, proxDate); // negativo = ya pasó (retraso/ausencia)
+      if (delta < 0) {
+        const atraso = Math.abs(delta);
+        return { kind: "RETRASO", daysDelay: atraso, label: `RETRASO ${atraso}d`, cls: "b-retraso" };
+      }
+      if (delta <= 7) {
+        return { kind: "PROXIMA", daysDelay: 0, label: delta === 0 ? "VENCE HOY" : `PRÓX. EN ${delta}d`, cls: "b-proxima" };
+      }
+      return { kind: "AL_DIA", daysDelay: 0, label: "AL DÍA", cls: "b-aldia" };
+    }
+
+    function normalizePhone(raw) {
+      let digits = String(raw || "").replace(/\D+/g, "");
+      if (!digits) return "";
+      if (digits.startsWith("0")) digits = digits.slice(1);
+      if ((digits.startsWith("549") || digits.startsWith("54")) && digits.length >= 12) return digits;
+      if (digits.length >= 10 && digits.length <= 11) return "549" + digits;
+      return digits;
+    }
+
+    function buildWhatsAppLink(pac, st) {
+      const phone = normalizePhone(pac.TELEFONO);
+      if (!phone) return "";
+      const nombre = (pac.APELLIDO_Y_NOMBRE || "paciente").trim();
+      const prox = (pac.PROXIMA_CONSULTA || "").trim();
+      const eg = pac.EG_SEMANAS ? ` (EG ${pac.EG_SEMANAS} sem)` : "";
+      let msg = "";
+      if (st.kind === "RETRASO") {
+        msg = `Hola ${nombre}, desde el consultorio de Obstetricia del Hospital Colonia El Simbolar${eg} vimos que tenías consulta programada para el ${prox} (${st.daysDelay} día(s) de retraso). Por favor respondé este mensaje para reprogramar tu control lo antes posible.`;
+      } else {
+        msg = `Hola ${nombre}, te escribimos desde el consultorio de Obstetricia del Hospital Colonia El Simbolar${eg} para recordar tu próxima consulta${prox ? ` del ${prox}` : ""} y confirmar tu asistencia.`;
+      }
+      return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    }
+
+
+    function evalTermStatus(pac) {
+      const eg = Number(pac.EG_SEMANAS || 0);
+      if (!eg || isNaN(eg)) {
+        return { kind: "SIN_EG", isTerm: false, isCrit: false, label: "SIN EG", cls: "b-sinfecha" };
+      }
+      if (eg >= 41) {
+        return { kind: "CRIT_41", isTerm: true, isCrit: true, label: `≥41s LÍMITE (${eg}s)`, cls: "b-prolongada" };
+      }
+      if (eg >= 37) {
+        return { kind: "TERMINO", isTerm: true, isCrit: false, label: `A TÉRMINO (${eg}s)`, cls: "b-termino" };
+      }
+      return { kind: "NO_TERMINO", isTerm: false, isCrit: false, label: `NO TÉRMINO (${eg}s)`, cls: "b-pretermino" };
+    }
+
+    function renderRiskBadge(pac) {
+      const rsk = String(pac.RIESGO || "BAJO").toUpperCase();
+      return `<span class="badge ${rsk === "ALTO" ? "b-alto" : "b-bajo"}">${rsk}</span>`;
+    }
+
+    function setFilterMode(mode) {
+      filterMode = mode;
+      document.querySelectorAll(".chip-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+      renderVeedor();
+    }
+
+    function renderVeedor() {
+      const dniQ = (document.getElementById("fDni").value || "").replace(/\D+/g, "");
+      const nomQ = (document.getElementById("fNombre").value || "").trim().toLowerCase();
+      const rskQ = document.getElementById("fRiesgo").value;
+
+      const activas = pacientes.filter(p => String(p.ESTADO || "ACTIVA").toUpperCase() === "ACTIVA");
+
+      let cntRetraso = 0, cntProx = 0, cntAlDia = 0;
+      activas.forEach(p => {
+        const st = evalScheduleStatus(p);
+        if (st.kind === "RETRASO") cntRetraso++;
+        else if (st.kind === "PROXIMA") cntProx++;
+        else if (st.kind === "AL_DIA") cntAlDia++;
+      });
+
+      document.getElementById("kpiTotal").textContent = activas.length;
+      document.getElementById("kpiRetraso").textContent = cntRetraso;
+      document.getElementById("kpiProximas").textContent = cntProx;
+      document.getElementById("kpiAlDia").textContent = cntAlDia;
+
+      const rows = activas
+        .map(p => ({ p, st: evalScheduleStatus(p), term: evalTermStatus(p) }))
+        .filter(({ p, st, term }) => {
+          if (dniQ && !String(p.DNI || "").replace(/\D+/g, "").includes(dniQ)) return false;
+          if (nomQ && !String(p.APELLIDO_Y_NOMBRE || "").toLowerCase().includes(nomQ)) return false;
+          if (rskQ !== "TODOS" && String(p.RIESGO || "BAJO").toUpperCase() !== rskQ) return false;
+          if (filterMode === "RETRASO" && st.kind !== "RETRASO") return false;
+          if (filterMode === "PROXIMAS" && st.kind !== "PROXIMA") return false;
+          if (filterMode === "TERMINO" && !term.isTerm) return false;
+          if (filterMode === "LIMITE_41" && !term.isCrit) return false;
+          if (filterMode === "SIN_TEL" && normalizePhone(p.TELEFONO) !== "") return false;
+          return true;
+        })
+        .sort((a, b) => b.st.daysDelay - a.st.daysDelay);
+
+      const tbody = document.getElementById("veedorTbody");
+      const mobile = document.getElementById("veedorMobile");
+
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--text-muted);">No hay pacientes que coincidan con el filtro seleccionado.</td></tr>`;
+        mobile.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Sin pacientes para mostrar.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(({ p, st, term }) => {
+        const waUrl = buildWhatsAppLink(p, st);
+        const waBtn = waUrl
+          ? `<a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn ${st.kind === "RETRASO" ? "btn-wa-alert" : "btn-wa"}">${st.kind === "RETRASO" ? "Avisar Retraso WA" : "WhatsApp"}</a>`
+          : `<span class="btn btn-wa btn-disabled">Sin Tel.</span>`;
+        return `
+          <tr class="${st.kind === "RETRASO" ? "row-delayed" : ""}">
+            <td><strong>${p.DNI || "—"}</strong></td>
+            <td><strong>${p.APELLIDO_Y_NOMBRE || "—"}</strong></td>
+            <td>${p.EG_SEMANAS ? `${p.EG_SEMANAS} sem` : "—"}</td>
+            <td><span class="badge ${term.cls}">${term.label}</span></td>
+            <td>${renderRiskBadge(p)}</td>
+            <td>${p.FECHA_ULTIMO_CONTROL || "—"}</td>
+            <td><strong>${p.PROXIMA_CONSULTA || "—"}</strong></td>
+            <td><span class="badge ${st.cls}">${st.label}</span></td>
+            <td>${p.TELEFONO || "—"}</td>
+            <td>${waBtn}</td>
+          </tr>
+        `;
+      }).join("");
+
+      mobile.innerHTML = rows.map(({ p, st, term }) => {
+        const waUrl = buildWhatsAppLink(p, st);
+        const waBtn = waUrl
+          ? `<a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn ${st.kind === "RETRASO" ? "btn-wa-alert" : "btn-wa"}" style="width:100%;">${st.kind === "RETRASO" ? "Avisar Retraso por WhatsApp" : "Enviar WhatsApp"}</a>`
+          : `<span class="btn btn-wa btn-disabled" style="width:100%;">Sin teléfono</span>`;
+        return `
+          <div class="m-card ${st.kind === "RETRASO" ? "delayed" : ""}">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <strong>${p.APELLIDO_Y_NOMBRE || "—"}</strong>
+              <span class="badge ${st.cls}">${st.label}</span>
+            </div>
+            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="badge ${term.cls}">${term.label}</span>
+              ${renderRiskBadge(p)}
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">DNI ${p.DNI || "—"} · Tel: ${p.TELEFONO || "—"}</div>
+            <div class="m-grid">
+              <div><strong>EG:</strong> ${p.EG_SEMANAS ? `${p.EG_SEMANAS} sem` : "—"}</div>
+              <div><strong>Últ. control:</strong> ${p.FECHA_ULTIMO_CONTROL || "—"}</div>
+              <div><strong>Próx. consulta:</strong> ${p.PROXIMA_CONSULTA || "—"}</div>
+              <div><strong>Riesgo:</strong> ${p.RIESGO || "BAJO"}</div>
+            </div>
+            ${waBtn}
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function loadVeedorData() {
+      try {
+        const res = await fetch(`${cfg.url}?key=${encodeURIComponent(cfg.key)}&t=${Date.now()}`);
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.pacientes)) {
+          pacientes = data.pacientes;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(pacientes));
+        }
+      } catch (e) {
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) pacientes = JSON.parse(cached);
+      }
+      const now = new Date();
+      document.getElementById("lastCheckLabel").textContent = `Consultado: ${now.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}`;
+      renderVeedor();
+    }
+
+    function openCfgModal() {
+      document.getElementById("cfgUrl").value = cfg.url;
+      document.getElementById("cfgKey").value = cfg.key;
+      document.getElementById("cfgModal").classList.add("open");
+    }
+    function closeCfgModal() { document.getElementById("cfgModal").classList.remove("open"); }
+    function saveCfg() {
+      cfg.url = document.getElementById("cfgUrl").value.trim() || DEFAULT_URL;
+      cfg.key = document.getElementById("cfgKey").value.trim() || DEFAULT_KEY;
+      closeCfgModal();
+      loadVeedorData();
+    }
+
+    document.addEventListener("DOMContentLoaded", loadVeedorData);
+  </script>
+</body>
+</html>
