@@ -1,0 +1,3401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seguimiento Obstétrico · Hospital Colonia El Simbolar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-app: #f3f7fa;
+      --bg-card: #ffffff;
+      --bg-soft: #f5fafd;
+      --primary: #02677d;
+      --primary-dark: #014b5b;
+      --primary-light: #e6f4f7;
+      --accent: #0284c7;
+      --text-main: #102438;
+      --text-muted: #52677a;
+      --border: #d7e4ee;
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --danger-bg: #fee2e2;
+      --danger-text: #991b1b;
+      --warn-bg: #fef3c7;
+      --warn-text: #92400e;
+      --purple-bg: #f3e8ff;
+      --purple-text: #6b21a8;
+      --closed-bg: #e2e8f0;
+      --closed-text: #334155;
+      --shadow: 0 6px 20px rgba(2, 103, 125, 0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, .brand-title, .btn, th {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: #ffffff;
+      padding: 16px 22px;
+      box-shadow: 0 4px 16px rgba(1, 75, 91, 0.22);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .topbar-inner {
+      max-width: 1420px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-sub {
+      font-size: 0.82rem;
+      opacity: 0.92;
+      margin-top: 2px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25);
+    }
+
+    .dot.warn {
+      background: #fbbf24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.25);
+    }
+
+    .dot.err {
+      background: #f87171;
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.25);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      min-height: 40px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.12s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-light {
+      background: #ffffff;
+      color: var(--primary-dark);
+    }
+
+    .btn-outline-light {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-soft {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+
+    .btn-wa {
+      background: #16a34a;
+      color: #ffffff;
+    }
+    .btn-wa:hover {
+      background: #15803d;
+    }
+    .btn-wa.disabled-wa {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .btn-warn {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+    }
+
+    .btn-sm {
+      padding: 7px 11px;
+      min-height: 36px;
+      font-size: 0.77rem;
+      border-radius: 8px;
+    }
+
+    .container {
+      max-width: 1420px;
+      margin: 22px auto;
+      padding: 0 18px 56px;
+    }
+
+    .tabs-bar {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 8px;
+      padding-bottom: 6px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 11px 16px;
+      min-height: 42px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(2, 103, 125, 0.22);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.4px;
+    }
+
+    .kpi-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin: 5px 0 2px;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .filters-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .quick-chips-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .chip-btn {
+      background: #ffffff;
+      color: var(--text-main);
+      border: 1px solid #c5d7e5;
+      border-radius: 999px;
+      padding: 7px 13px;
+      min-height: 36px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .chip-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .quick-flags-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      padding: 12px 14px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    .flag-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .flag-check input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      min-height: 42px;
+      border: 1px solid #c6d7e4;
+      border-radius: 10px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      background: #ffffff;
+    }
+
+    textarea {
+      min-height: 68px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 103, 125, 0.14);
+    }
+
+    label {
+      display: block;
+      font-size: 0.79rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 5px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead th {
+      background: var(--primary);
+      color: #ffffff;
+      text-align: left;
+      padding: 11px 12px;
+      font-size: 0.76rem;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--bg-soft);
+    }
+
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e6eff5;
+      vertical-align: middle;
+    }
+
+    .mobile-cards {
+      display: none;
+    }
+
+    .pac-mobile-card {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .pac-mobile-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .pac-mobile-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary-dark);
+    }
+
+    .pac-mobile-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px 10px;
+      font-size: 0.82rem;
+      margin-bottom: 10px;
+    }
+
+    .pac-mobile-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.25px;
+      white-space: nowrap;
+      margin-right: 4px;
+      margin-bottom: 2px;
+    }
+
+    .badge-bajo, .badge-activa {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .badge-alto {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+    }
+
+    .badge-clinico {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+    }
+
+    .badge-obstetrico {
+      background: var(--purple-bg);
+      color: var(--purple-text);
+    }
+
+    .badge-cerrada, .badge-cerrado {
+      background: var(--closed-bg);
+      color: var(--closed-text);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .calc-box {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 14px;
+    }
+
+    .calc-result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .calc-metric {
+      background: #ffffff;
+      border: 1px solid #d5e4ef;
+      border-radius: 10px;
+      padding: 11px;
+    }
+
+    .calc-metric.highlight {
+      border-color: var(--primary);
+      background: #f0f9fc;
+    }
+
+    .calc-metric-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .calc-metric-val {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-top: 3px;
+    }
+
+    .calc-metric-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .pending-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 11px;
+      margin-bottom: 8px;
+      font-size: 0.84rem;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 38, 58, 0.54);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 820px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 22px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .close-btn {
+      background: #eef4f8;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-main);
+      flex: 0 0 auto;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      left: 20px;
+      max-width: 420px;
+      margin-left: auto;
+      background: var(--primary-dark);
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 11px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+      z-index: 90;
+      display: none;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-muted);
+    }
+
+    .empty-state p {
+      margin-top: 6px;
+      font-size: 0.88rem;
+    }
+
+    
+    .badge-termino {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .badge-prolongada {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 800;
+    }
+    .badge-vencida {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .badge-proxima {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .sync-retry-btn {
+      background: #ffffff;
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .quick-days-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .day-pill-btn {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid #bae0ea;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .day-pill-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    
+    .eg-rec-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid var(--primary);
+      border-radius: 12px;
+      padding: 13px 15px;
+      margin-top: 12px;
+    }
+    .eg-rec-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .eg-rec-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .eg-rec-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .eg-rec-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #bae6fd;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .eg-rec-chip:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .eg-rec-chip.applied {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+    .eg-rec-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 7px;
+    }
+    .pending-item.done-item {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .pending-item.done-item .pending-label {
+      text-decoration: line-through;
+      color: #166534;
+    }
+    .pending-item.undone-item {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+    .status-toggle-group {
+      display: inline-flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .btn-status-on {
+      background: #16a34a;
+      color: #ffffff;
+    }
+    .btn-status-off {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .eg-collapse-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .eg-collapse-body {
+      margin-top: 8px;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        padding: 12px 14px;
+      }
+      .brand-title {
+        font-size: 1rem;
+      }
+      .brand-sub {
+        font-size: 0.74rem;
+      }
+      .container {
+        padding: 0 12px 64px;
+        margin-top: 14px;
+      }
+      .card {
+        padding: 15px;
+      }
+      .desktop-table-wrap {
+        display: none;
+      }
+      .mobile-cards {
+        display: block;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .kpi-value {
+        font-size: 1.45rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <div class="brand-title">Seguimiento Obstétrico · Hospital Colonia El Simbolar</div>
+        <div class="brand-sub">Programa Remediar 07089 · REFES 10861612192033 · Obst. Diego Torres · Base 2027</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="sync-pill" id="syncStatusPill">
+          <span class="dot" id="syncDot"></span>
+          <span id="syncStatusText">Base 2027 lista</span>
+          <button type="button" class="sync-retry-btn" id="btnRetryQueue" onclick="flushSyncQueue()" style="display:none;">Reintentar (0)</button>
+        </div>
+        <button class="btn btn-light btn-sm" onclick="syncFromSheets()">⟳ Sincronizar</button>
+        <button class="btn btn-outline-light btn-sm" onclick="exportCsvBackup()">⬇ CSV</button>
+        <button class="btn btn-outline-light btn-sm" onclick="openSheetsModal()">⚙ Sheets</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="tabs-bar">
+      <button class="tab-btn active" data-tab="padron" onclick="switchTab('padron')">Padrón de Pacientes</button>
+      <button class="tab-btn" data-tab="controles" onclick="switchTab('controles')">+ Nuevo Control / Historial</button>
+      <button class="tab-btn" data-tab="calc" onclick="switchTab('calc')">Calculadora (CALC)</button>
+      <button class="tab-btn" data-tab="nueva" onclick="switchTab('nueva')">+ Nueva Embarazada</button>
+    </nav>
+
+    <!-- PESTAÑA 1: PADRÓN -->
+    <section class="tab-panel active" id="tab-padron">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Activas</div>
+          <div class="kpi-value" id="kpiActivas">0</div>
+          <div class="kpi-sub">Embarazadas en seguimiento</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Alto Riesgo</div>
+          <div class="kpi-value" id="kpiAltoRiesgo">0</div>
+          <div class="kpi-sub">Seguimiento prioritario</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">A Término (≥37s)</div>
+          <div class="kpi-value" id="kpiTermino">0</div>
+          <div class="kpi-sub">Entre pacientes activas</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Controles</div>
+          <div class="kpi-value" id="kpiControles">0</div>
+          <div class="kpi-sub">Registrados en historial</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Padrón Obstétrico</h2>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-soft btn-sm" onclick="clearLocalCache()">Limpiar caché</button>
+            <button class="btn btn-primary btn-sm" onclick="switchTab('controles')">+ Nuevo Control</button>
+            <button class="btn btn-primary btn-sm" onclick="switchTab('nueva')">+ Nueva Paciente</button>
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <div>
+            <label for="filterDni">Buscar por DNI</label>
+            <input type="text" id="filterDni" inputmode="numeric" placeholder="Ej. 28125102..." oninput="renderPadron()" />
+          </div>
+          <div>
+            <label for="filterSearch">Buscar por Apellido y Nombre / ID</label>
+            <input type="text" id="filterSearch" placeholder="Nombre, apellido o PAC-..." oninput="renderPadron()" />
+          </div>
+          <div>
+            <label for="filterEstado">Estado</label>
+            <select id="filterEstado" onchange="renderPadron()">
+              <option value="TODOS">Todos</option>
+              <option value="ACTIVA" selected>Activas</option>
+              <option value="CERRADA">Cerradas</option>
+            </select>
+          </div>
+          <div>
+            <label for="filterRiesgo">Nivel de Riesgo</label>
+            <select id="filterRiesgo" onchange="renderPadron()">
+              <option value="TODOS">Todos</option>
+              <option value="ALTO">Alto Riesgo</option>
+              <option value="BAJO">Bajo Riesgo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="quick-chips-bar" id="quickChipsBar">
+          <button type="button" class="chip-btn active" data-cond="TODAS" onclick="setQuickCondition('TODAS')">Todas</button>
+          <button type="button" class="chip-btn" data-cond="DIABETES" onclick="setQuickCondition('DIABETES')">Diabetes Gestacional / DBT</button>
+          <button type="button" class="chip-btn" data-cond="HTAIE" onclick="setQuickCondition('HTAIE')">HTAIE / HTA</button>
+          <button type="button" class="chip-btn" data-cond="MULTIPARA_4" onclick="setQuickCondition('MULTIPARA_4')">&gt; 4 Partos Anteriores</button>
+          <button type="button" class="chip-btn" data-cond="CESAREA_2" onclick="setQuickCondition('CESAREA_2')">≥ 2 Cesáreas Anteriores</button>
+        </div>
+
+        <div class="table-wrap desktop-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>DNI</th>
+                <th>Apellido y Nombre</th>
+                <th>Edad</th>
+                <th>FUM</th>
+                <th>FPP</th>
+                <th>EG</th>
+                <th>Riesgo / Condiciones</th>
+                <th>Estado</th>
+                <th>Últ. Control</th>
+                <th>Próx. Consulta</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="padronBody"></tbody>
+          </table>
+        </div>
+
+        <div class="mobile-cards" id="padronMobileCards"></div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 2: CONTROLES -->
+    <section class="tab-panel" id="tab-controles">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Registrar Nuevo Control Prenatal</h2>
+        </div>
+        <form id="controlForm" onsubmit="handleSaveControl(event)">
+          <div class="grid-3">
+            <div>
+              <label for="ctrlBuscarDni">Buscar Paciente por DNI (rápido)</label>
+              <input type="text" id="ctrlBuscarDni" inputmode="numeric" placeholder="Escribí DNI para filtrar..." oninput="filterControlPacienteByDni()" />
+            </div>
+            <div>
+              <label for="ctrlPacienteId">Embarazada *</label>
+              <select id="ctrlPacienteId" required onchange="prefillControlFromPatient()"></select>
+            </div>
+            <div>
+              <label for="ctrlFecha">Fecha de Control *</label>
+              <input type="date" id="ctrlFecha" required />
+            </div>
+            <div>
+              <label for="ctrlEG">Edad Gestacional (semanas) *</label>
+              <input type="number" id="ctrlEG" min="1" max="44" required oninput="renderEgRecommendations()" onchange="renderEgRecommendations()" />
+            </div>
+            <div>
+              <label for="ctrlRiesgo">Riesgo en este control</label>
+              <select id="ctrlRiesgo">
+                <option value="BAJO">BAJO</option>
+                <option value="ALTO">ALTO</option>
+              </select>
+            </div>
+            <div>
+              <label for="ctrlProx">Próxima Consulta</label>
+              <input type="date" id="ctrlProx" />
+              <div class="quick-days-bar">
+                <button type="button" class="day-pill-btn" onclick="setQuickNextConsultDays(7)">+7 d</button>
+                <button type="button" class="day-pill-btn" onclick="setQuickNextConsultDays(14)">+14 d</button>
+                <button type="button" class="day-pill-btn" onclick="setQuickNextConsultDays(21)">+21 d</button>
+                <button type="button" class="day-pill-btn" onclick="setQuickNextConsultDays(28)">+28 d</button>
+              </div>
+            </div>
+            <div>
+              <label for="ctrlProfesional">Profesional</label>
+              <input type="text" id="ctrlProfesional" value="Diego Torres" />
+            </div>
+          </div>
+
+          <div class="quick-flags-box">
+            <label class="flag-check">
+              <input type="checkbox" id="ctrlFlagDbt" onchange="syncFlagsToObs('ctrl')" />
+              Diabetes Gestacional / DBT
+            </label>
+            <label class="flag-check">
+              <input type="checkbox" id="ctrlFlagHtaie" onchange="syncFlagsToObs('ctrl')" />
+              HTAIE / HTA
+            </label>
+            <label class="flag-check">
+              <input type="checkbox" id="ctrlFlagMultipara" onchange="syncFlagsToObs('ctrl')" />
+              &gt; 4 partos anteriores
+            </label>
+            <label class="flag-check">
+              <input type="checkbox" id="ctrlFlagCesarea2" onchange="syncFlagsToObs('ctrl')" />
+              ≥ 2 cesáreas anteriores
+            </label>
+          </div>
+
+          <div id="egRecommendationsBox" class="eg-rec-box" style="display:none;"></div>
+
+          <div style="margin-top: 12px;">
+            <label for="ctrlObs">Observaciones clínicas / indicaciones</label>
+            <textarea id="ctrlObs" rows="2" oninput="renderEgRecommendations()" placeholder="PA, AU, LCF, laboratorio, ecografía, indicaciones..."></textarea>
+          </div>
+          <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary">Guardar Nuevo Control</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title" id="historialCtrlTitle">Historial Longitudinal de Controles</h2>
+            <div id="historialCtrlSubtitle" style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">Ordenado cronológicamente del más nuevo al más viejo</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="btn btn-soft btn-sm" id="btnToggleAllControles" onclick="toggleShowAllControles()" style="display:none;">Ver todos los controles</button>
+            <input type="text" id="filterCtrlSearch" style="max-width: 280px;" placeholder="Filtrar dentro del historial..." oninput="renderControles()" />
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Control</th>
+                <th>Fecha</th>
+                <th>DNI</th>
+                <th>Apellido y Nombre</th>
+                <th>EG</th>
+                <th>Riesgo</th>
+                <th>Próx. Consulta</th>
+                <th>Observaciones</th>
+                <th>Profesional</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="controlesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 3: CALCULADORA OBSTÉTRICA (CALC) -->
+    <section class="tab-panel" id="tab-calc">
+      <div class="grid-2">
+        <div class="card">
+          <h2 class="card-title">Cálculo por FUM</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+            FPP por regla de Naegele (FUM + 280 días) y edad gestacional a la fecha de referencia.
+          </p>
+          <div class="grid-2" style="margin-top:14px;">
+            <div>
+              <label for="calcFum">Fecha de Última Menstruación (FUM)</label>
+              <input type="date" id="calcFum" oninput="calcularTodo()" />
+            </div>
+            <div>
+              <label for="calcRefDate">Fecha de Referencia / Control</label>
+              <input type="date" id="calcRefDate" oninput="calcularTodo()" />
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div style="font-weight:700; color:var(--primary-dark); font-size:0.88rem;">Resultado por FUM</div>
+            <div class="calc-result-grid">
+              <div class="calc-metric">
+                <div class="calc-metric-label">EG por FUM</div>
+                <div class="calc-metric-val" id="resEgFum">—</div>
+                <div class="calc-metric-sub" id="resEgFumDias">Sin FUM ingresada</div>
+              </div>
+              <div class="calc-metric">
+                <div class="calc-metric-label">FPP por FUM</div>
+                <div class="calc-metric-val" id="resFppFum">—</div>
+                <div class="calc-metric-sub">FUM + 280 días</div>
+              </div>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-soft btn-sm" onclick="aplicarFumANuevaPaciente()">Usar en Nueva Embarazada</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Cálculo por Ultrasonido (ECO) + EG Actual</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+            Calcula la EG actual a la fecha de referencia, EG en el estudio, FUM x ECO y FPP x ECO.
+          </p>
+          <div class="grid-3" style="margin-top:14px;">
+            <div>
+              <label for="calcEcoFecha">Fecha del Ultrasonido</label>
+              <input type="date" id="calcEcoFecha" oninput="calcularTodo()" />
+            </div>
+            <div>
+              <label for="calcEcoSem">Semanas por ECO</label>
+              <input type="number" id="calcEcoSem" min="0" max="42" placeholder="Ej. 12" oninput="calcularTodo()" />
+            </div>
+            <div>
+              <label for="calcEcoDias">Días por ECO (0–6)</label>
+              <input type="number" id="calcEcoDias" min="0" max="6" value="0" oninput="calcularTodo()" />
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div style="font-weight:700; color:var(--primary-dark); font-size:0.88rem;">Resultado por Ultrasonido</div>
+            <div class="calc-result-grid">
+              <div class="calc-metric highlight">
+                <div class="calc-metric-label">EG Actual por ECO</div>
+                <div class="calc-metric-val" id="resEgActualEco">—</div>
+                <div class="calc-metric-sub" id="resEgActualEcoDetalle">Completá fecha y semanas de ECO</div>
+              </div>
+              <div class="calc-metric">
+                <div class="calc-metric-label">EG al Día del ECO</div>
+                <div class="calc-metric-val" id="resEgEnEco">—</div>
+                <div class="calc-metric-sub" id="resDiasTranscurridosEco">Días transcurridos: —</div>
+              </div>
+              <div class="calc-metric">
+                <div class="calc-metric-label">FUM Calculada x ECO</div>
+                <div class="calc-metric-val" id="resFumEco">—</div>
+                <div class="calc-metric-sub">Retrocedida desde ECO</div>
+              </div>
+              <div class="calc-metric">
+                <div class="calc-metric-label">FPP Calculada x ECO</div>
+                <div class="calc-metric-val" id="resFppEco">—</div>
+                <div class="calc-metric-sub">FUM x ECO + 280 días</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="aplicarEcoAControl()">
+                Usar en Nuevo Control
+              </button>
+              <button type="button" class="btn btn-soft btn-sm" onclick="aplicarEcoANuevaPaciente()">
+                Usar en Nueva Embarazada
+              </button>
+              <span id="ecoAplicadoMsg" style="font-size:0.8rem; color:var(--primary-dark); font-weight:500;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 4: NUEVA EMBARAZADA -->
+    <section class="tab-panel" id="tab-nueva">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Registrar Nueva Embarazada</h2>
+        </div>
+        <form id="nuevaPacienteForm" onsubmit="handleCreatePaciente(event)">
+          <div class="grid-3">
+            <div>
+              <label for="newDni">DNI *</label>
+              <input type="text" id="newDni" inputmode="numeric" required placeholder="Sin puntos" />
+            </div>
+            <div>
+              <label for="newNombre">Apellido y Nombre *</label>
+              <input type="text" id="newNombre" required placeholder="Apellido Nombre" />
+            </div>
+            <div>
+              <label for="newFn">Fecha de Nacimiento</label>
+              <input type="date" id="newFn" onchange="syncEdadFromFn()" />
+            </div>
+            <div>
+              <label for="newEdad">Edad (años)</label>
+              <input type="number" id="newEdad" min="10" max="60" />
+            </div>
+            <div>
+              <label for="newTel">Teléfono</label>
+              <input type="text" id="newTel" placeholder="Ej. 385..." />
+            </div>
+            <div>
+              <label for="newFum">FUM *</label>
+              <input type="date" id="newFum" required onchange="syncFppAndEgFromNewFum()" />
+            </div>
+            <div>
+              <label for="newFpp">FPP</label>
+              <input type="date" id="newFpp" />
+            </div>
+            <div>
+              <label for="newEg">EG Actual (semanas)</label>
+              <input type="number" id="newEg" min="1" max="44" oninput="renderNewEgRecommendations()" onchange="renderNewEgRecommendations()" />
+            </div>
+            <div>
+              <label for="newRiesgo">Nivel de Riesgo</label>
+              <select id="newRiesgo">
+                <option value="BAJO">BAJO</option>
+                <option value="ALTO">ALTO</option>
+              </select>
+            </div>
+            <div>
+              <label for="newUltControl">Fecha Último Control</label>
+              <input type="date" id="newUltControl" />
+            </div>
+            <div>
+              <label for="newProxConsulta">Próxima Consulta</label>
+              <input type="date" id="newProxConsulta" />
+            </div>
+            <div>
+              <label for="newProfesional">Profesional</label>
+              <input type="text" id="newProfesional" value="Diego Torres" />
+            </div>
+          </div>
+
+          <div class="quick-flags-box">
+            <label class="flag-check">
+              <input type="checkbox" id="newFlagDbt" onchange="syncFlagsToObs('new')" />
+              Diabetes Gestacional / DBT
+            </label>
+            <label class="flag-check">
+              <input type="checkbox" id="newFlagHtaie" onchange="syncFlagsToObs('new')" />
+              HTAIE / HTA
+            </label>
+            <label class="flag-check">
+              <input type="checkbox" id="newFlagMultipara" onchange="syncFlagsToObs('new')" />
+              &gt; 4 partos anteriores
+            </label>
+            <label class="flag-check">
+              <input type="checkbox" id="newFlagCesarea2" onchange="syncFlagsToObs('new')" />
+              ≥ 2 cesáreas anteriores
+            </label>
+          </div>
+
+          <div id="newEgRecommendationsBox" class="eg-rec-box" style="display:none;"></div>
+
+          <div style="margin-top: 12px;">
+            <label for="newObs">Observaciones clínicas / antecedentes</label>
+            <textarea id="newObs" rows="2" oninput="renderNewEgRecommendations()" placeholder="Antecedentes obstétricos, patologías, estudios solicitados..."></textarea>
+          </div>
+          <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary">Agregar y Cargar Control</button>
+            <button type="button" class="btn btn-soft" onclick="submitNuevaPacienteSoloPadron()">Solo Guardar en Padrón</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL CONEXIÓN SHEETS -->
+  <div class="modal-backdrop" id="sheetsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="card-title">Conexión con Google Sheets (Google Apps Script)</h3>
+        <button class="close-btn" onclick="closeSheetsModal()">×</button>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label for="cfgScriptUrl">URL de Implementación Web (/exec)</label>
+        <input type="url" id="cfgScriptUrl" />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="cfgApiKey">Clave de Acceso (API_KEY)</label>
+        <input type="text" id="cfgApiKey" />
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+        <button class="btn btn-soft" onclick="closeSheetsModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveSheetsConfig()">Guardar y Sincronizar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DNI DUPLICADO / NUEVO EMBARAZO -->
+  <div class="modal-backdrop" id="dupDniModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="card-title" style="color:#b91c1c;">DNI Ya Registrado en el Padrón</h3>
+        <button class="close-btn" onclick="closeDupDniModal()">×</button>
+      </div>
+      <div id="dupDniModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR CONTROL -->
+  <div class="modal-backdrop" id="editControlModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="card-title">Editar Control Prenatal</h3>
+        <button class="close-btn" onclick="closeEditControlModal()">×</button>
+      </div>
+      <div id="editControlModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL SUGERENCIAS INICIO EMBARAZO (NUEVA PACIENTE) -->
+  <div class="modal-backdrop" id="newEgModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="card-title" id="newEgModalTitle">Sugerencias según Edad Gestacional · Guía Inicio Embarazo</h3>
+        <button type="button" class="close-btn" onclick="closeNewEgModal()">×</button>
+      </div>
+      <div id="newEgModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL FICHA, PENDIENTES Y CIERRE/DESENLACE -->
+  <div class="modal-backdrop" id="detailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="card-title" id="detailModalTitle">Ficha de Paciente</h3>
+        <button class="close-btn" onclick="closeDetailModal()">×</button>
+      </div>
+      <div id="detailModalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastBox"></div>
+
+  <script>
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhT_P5Gzplas2jFwB_MvHNfD8qDYyOnI0xpbZem-qR2CiW4ZbF0MalbN_t2pRpd8rECg/exec";
+    const DEFAULT_API_KEY = "REMEDIAR07089";
+    const STORAGE_KEY_PAC = "obst_2027_pacientes_v3";
+    const STORAGE_KEY_CTRL = "obst_2027_controles_v3";
+    const STORAGE_KEY_CFG = "obst_2027_config_v3";
+    const STORAGE_KEY_QUEUE = "obst_2027_sync_queue_v1";
+
+    let state = {
+      pacientes: [],
+      controles: [],
+      syncQueue: [],
+      config: {
+        scriptUrl: DEFAULT_SCRIPT_URL,
+        apiKey: DEFAULT_API_KEY
+      },
+      quickCondition: "TODAS",
+      lastEcoCalc: null,
+      activeModalPacId: null,
+      pendingDuplicateDraft: null,
+      continueToControlAfterCreate: true,
+      showAllControles: false
+    };
+
+    const FLAG_DEFINITIONS = [
+      { key: "DIABETES", label: "Diabetes Gestacional / DBT", group: "clinico" },
+      { key: "HTAIE", label: "HTAIE / HTA", group: "clinico" },
+      { key: "MULTIPARA_4", label: "> 4 partos anteriores", group: "obstetrico" },
+      { key: "CESAREA_2", label: "≥ 2 cesáreas anteriores", group: "obstetrico" }
+    ];
+
+
+    function normalizeWhatsAppPhone(rawPhone) {
+      let digits = String(rawPhone || "").replace(/\D+/g, "");
+      if (!digits) return "";
+      // Si empieza con 0 (ej. 0385...), quitar el 0 inicial
+      if (digits.startsWith("0")) digits = digits.slice(1);
+      // Si ya empieza con 549 o 54 y tiene largo internacional, usarlo
+      if (digits.startsWith("549") && digits.length >= 12) return digits;
+      if (digits.startsWith("54") && digits.length >= 12) return digits;
+      // En Argentina celular: 54 + 9 + código de área sin 0 + número (sin 15)
+      if (digits.length >= 10 && digits.length <= 11) {
+        return "549" + digits;
+      }
+      return digits;
+    }
+
+    function buildWhatsAppUrl(pac) {
+      const phone = normalizeWhatsAppPhone(pac.TELEFONO);
+      if (!phone) return "";
+      const nombre = (pac.APELLIDO_Y_NOMBRE || "paciente").trim();
+      const prox = (pac.PROXIMA_CONSULTA || "").trim();
+      const eg = pac.EG_SEMANAS ? `${pac.EG_SEMANAS} semanas` : "";
+      const partes = [
+        `Hola ${nombre}, te escribimos desde el consultorio de Obstetricia del Hospital Colonia El Simbolar.`
+      ];
+      if (prox) {
+        partes.push(`Te recordamos tu próxima consulta programada para el ${prox}${eg ? ` (EG aprox. ${eg})` : ""}.`);
+      } else if (eg) {
+        partes.push(`Nos comunicamos para tu seguimiento obstétrico (EG aprox. ${eg}).`);
+      } else {
+        partes.push(`Nos comunicamos para coordinar tu próximo control prenatal.`);
+      }
+      partes.push(`Por favor confirmá si podés asistir o avisame si necesitás reprogramar. Gracias.`);
+      const text = encodeURIComponent(partes.join(" "));
+      return `https://wa.me/${phone}?text=${text}`;
+    }
+
+    function renderWhatsAppAction(pac, fullWidth = false) {
+      const url = buildWhatsAppUrl(pac);
+      const widthStyle = fullWidth ? "flex:1;" : "";
+      if (!url) {
+        return `<span class="btn btn-wa btn-sm disabled-wa" style="${widthStyle}" title="Sin teléfono cargado">WhatsApp</span>`;
+      }
+      return `<a class="btn btn-wa btn-sm" style="${widthStyle} text-decoration:none;" href="${url}" target="_blank" rel="noopener noreferrer" title="Enviar WhatsApp a ${pac.TELEFONO || ""}">WhatsApp</a>`;
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById("toastBox");
+      box.textContent = msg;
+      box.classList.add("show");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => box.classList.remove("show"), 3200);
+    }
+
+    function setSyncStatus(mode, text) {
+      const dot = document.getElementById("syncDot");
+      const label = document.getElementById("syncStatusText");
+      dot.className = "dot" + (mode === "warn" ? " warn" : mode === "err" ? " err" : "");
+      label.textContent = text;
+    }
+
+    function todayISO() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseDateFlexible(val) {
+      if (!val) return null;
+      const str = String(val).trim();
+      if (!str) return null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        const [y, m, d] = str.split("-").map(Number);
+        return new Date(y, m - 1, d);
+      }
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
+        const [d, m, y] = str.split("/").map(Number);
+        return new Date(y, m - 1, d);
+      }
+      const parsed = new Date(str);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatDateDMY(dateObj) {
+      if (!dateObj || isNaN(dateObj.getTime())) return "";
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const y = dateObj.getFullYear();
+      return `${d}/${m}/${y}`;
+    }
+
+    function toISOFromDate(dateObj) {
+      if (!dateObj || isNaN(dateObj.getTime())) return "";
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const y = dateObj.getFullYear();
+      return `${y}-${m}-${d}`;
+    }
+
+    function addDays(dateObj, days) {
+      const copy = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+      copy.setDate(copy.getDate() + days);
+      return copy;
+    }
+
+    function diffDays(startDate, endDate) {
+      const a = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const b = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      return Math.round((b - a) / 86400000);
+    }
+
+    function formatSemDias(totalDays) {
+      if (typeof totalDays !== "number" || isNaN(totalDays)) return "—";
+      const sign = totalDays < 0 ? "-" : "";
+      const absDays = Math.abs(Math.round(totalDays));
+      const sem = Math.floor(absDays / 7);
+      const dias = absDays % 7;
+      return `${sign}${sem} sem ${dias} d`;
+    }
+
+    function detectConditions(text) {
+      const t = String(text || "").toLowerCase();
+      const found = [];
+
+      if (/diabetes|dbt|glucosa|hba1c|glicosilada|insulin/.test(t)) {
+        found.push({ key: "DIABETES", label: "DBT / Gestacional", group: "clinico" });
+      }
+      if (/htaie|hipertension|hipertensión|hta|preeclampsia|pa elevada/.test(t)) {
+        found.push({ key: "HTAIE", label: "HTAIE / HTA", group: "clinico" });
+      }
+
+      const multiparaMatch = t.match(/(?:>|mayor(?:es)?\s*(?:a|de)?|mas\s*de|más\s*de)\s*4\s*partos?|multipara\s*4|[5-9]\s*partos?|1\d\s*partos?/);
+      if (multiparaMatch || /gran\s*multipara|gran\s*multípara/.test(t)) {
+        found.push({ key: "MULTIPARA_4", label: "> 4 partos", group: "obstetrico" });
+      }
+
+      const cesareaMatch = t.match(/(?:>=|≥|mayor(?:es)?\s*(?:o\s*igual)?\s*(?:a|de)?|mas\s*de|más\s*de|doble|triple|[2-9])\s*cesareas?|[2-9]\s*cesáreas?/);
+      if (cesareaMatch || /doble\s*cesarea|triple\s*cesarea/.test(t)) {
+        found.push({ key: "CESAREA_2", label: "≥ 2 cesáreas", group: "obstetrico" });
+      }
+
+      return found;
+    }
+
+    function syncFlagsToObs(prefix) {
+      const obsEl = document.getElementById(prefix === "new" ? "newObs" : "ctrlObs");
+      const flagMap = [
+        { id: prefix + "FlagDbt", text: "Diabetes Gestacional / DBT" },
+        { id: prefix + "FlagHtaie", text: "HTAIE / HTA" },
+        { id: prefix + "FlagMultipara", text: "> 4 partos anteriores" },
+        { id: prefix + "FlagCesarea2", text: "≥ 2 cesáreas anteriores" }
+      ];
+
+      let current = obsEl.value.trim();
+      flagMap.forEach(item => {
+        const checked = document.getElementById(item.id)?.checked;
+        const alreadyHas = current.toLowerCase().includes(item.text.toLowerCase());
+        if (checked && !alreadyHas) {
+          current = current ? `${current} · ${item.text}` : item.text;
+        }
+      });
+      obsEl.value = current;
+      if (prefix === "new" && flagMap.some(item => document.getElementById(item.id)?.checked)) {
+        document.getElementById("newRiesgo").value = "ALTO";
+      }
+      if (prefix === "ctrl" && flagMap.some(item => document.getElementById(item.id)?.checked)) {
+        document.getElementById("ctrlRiesgo").value = "ALTO";
+      }
+    }
+
+    function setQuickCondition(condKey) {
+      state.quickCondition = condKey;
+      document.querySelectorAll(".chip-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.cond === condKey);
+      });
+      renderPadron();
+    }
+
+    function parsePendientes(raw) {
+      if (Array.isArray(raw)) return raw;
+      if (!raw) return [];
+      try {
+        const arr = JSON.parse(String(raw));
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadLocalState() {
+      const savedCfg = localStorage.getItem(STORAGE_KEY_CFG);
+      if (savedCfg) {
+        try {
+          const parsed = JSON.parse(savedCfg);
+          state.config.scriptUrl = parsed.scriptUrl || DEFAULT_SCRIPT_URL;
+          state.config.apiKey = parsed.apiKey || DEFAULT_API_KEY;
+        } catch (e) {}
+      }
+      const savedPac = localStorage.getItem(STORAGE_KEY_PAC);
+      const savedCtrl = localStorage.getItem(STORAGE_KEY_CTRL);
+      const savedQueue = localStorage.getItem(STORAGE_KEY_QUEUE);
+      state.pacientes = savedPac ? JSON.parse(savedPac) : [];
+      state.controles = savedCtrl ? JSON.parse(savedCtrl) : [];
+      state.syncQueue = savedQueue ? JSON.parse(savedQueue) : [];
+      updateQueueBadge();
+    }
+
+    function saveLocalState() {
+      localStorage.setItem(STORAGE_KEY_PAC, JSON.stringify(state.pacientes));
+      localStorage.setItem(STORAGE_KEY_CTRL, JSON.stringify(state.controles));
+      localStorage.setItem(STORAGE_KEY_CFG, JSON.stringify(state.config));
+      localStorage.setItem(STORAGE_KEY_QUEUE, JSON.stringify(state.syncQueue));
+      updateQueueBadge();
+    }
+
+    function updateQueueBadge() {
+      const btn = document.getElementById("btnRetryQueue");
+      if (!btn) return;
+      const count = state.syncQueue.length;
+      if (count > 0) {
+        btn.style.display = "inline-flex";
+        btn.textContent = `Reintentar (${count})`;
+      } else {
+        btn.style.display = "none";
+      }
+    }
+
+    function clearLocalCache() {
+      state.pacientes = [];
+      state.controles = [];
+      saveLocalState();
+      renderAll();
+      showToast("Caché local limpia");
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tabId);
+      });
+      document.querySelectorAll(".tab-panel").forEach(panel => {
+        panel.classList.toggle("active", panel.id === `tab-${tabId}`);
+      });
+      if (tabId === "controles") {
+        populatePacienteSelect();
+      }
+    }
+
+    function renderKPIs() {
+      const activas = state.pacientes.filter(p => String(p.ESTADO || "ACTIVA").toUpperCase() === "ACTIVA");
+      const alto = activas.filter(p => String(p.RIESGO || "BAJO").toUpperCase() === "ALTO");
+      const termino = activas.filter(p => Number(p.EG_SEMANAS || 0) >= 37);
+
+      document.getElementById("kpiActivas").textContent = activas.length;
+      document.getElementById("kpiAltoRiesgo").textContent = alto.length;
+      document.getElementById("kpiTermino").textContent = termino.length;
+      document.getElementById("kpiControles").textContent = state.controles.length;
+    }
+
+    function getFilteredPacientes() {
+      const dniQ = (document.getElementById("filterDni").value || "").replace(/\D+/g, "");
+      const q = (document.getElementById("filterSearch").value || "").trim().toLowerCase();
+      const estadoFilter = document.getElementById("filterEstado").value;
+      const riesgoFilter = document.getElementById("filterRiesgo").value;
+
+      return state.pacientes.filter(p => {
+        const est = String(p.ESTADO || "ACTIVA").toUpperCase();
+        const rsk = String(p.RIESGO || "BAJO").toUpperCase();
+        if (estadoFilter !== "TODOS" && est !== estadoFilter) return false;
+        if (riesgoFilter !== "TODOS" && rsk !== riesgoFilter) return false;
+
+        if (dniQ) {
+          const pacDni = String(p.DNI || "").replace(/\D+/g, "");
+          if (!pacDni.includes(dniQ)) return false;
+        }
+
+        if (q) {
+          const hay = `${p.APELLIDO_Y_NOMBRE || ""} ${p.ID_PACIENTE || ""} ${p.OBSERVACIONES || ""}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+
+        if (state.quickCondition !== "TODAS") {
+          const pacControlesObs = state.controles
+            .filter(c => c.ID_PACIENTE === p.ID_PACIENTE || String(c.DNI || "") === String(p.DNI || ""))
+            .map(c => c.OBSERVACIONES || "")
+            .join(" ");
+          const conds = detectConditions(`${p.OBSERVACIONES || ""} ${p.DESENLACE_NOTA || ""} ${pacControlesObs}`);
+          if (!conds.some(c => c.key === state.quickCondition)) return false;
+        }
+
+        return true;
+      });
+    }
+
+
+    function getGestationalTrafficLight(pac) {
+      const est = String(pac.ESTADO || "ACTIVA").toUpperCase();
+      if (est !== "ACTIVA") return null;
+      const eg = Number(pac.EG_SEMANAS || 0);
+      if (!eg || isNaN(eg)) return null;
+      if (eg >= 41) {
+        return { level: "crit", label: `≥41s LÍMITE (${eg}s)`, cls: "badge-prolongada" };
+      }
+      if (eg >= 37) {
+        return { level: "term", label: `A TÉRMINO (${eg}s)`, cls: "badge-termino" };
+      }
+      return null;
+    }
+
+    function getConsultAlertBadge(pac) {
+      const est = String(pac.ESTADO || "ACTIVA").toUpperCase();
+      if (est !== "ACTIVA") return null;
+      const proxDate = parseDateFlexible(pac.PROXIMA_CONSULTA);
+      if (!proxDate || isNaN(proxDate.getTime())) return null;
+      const hoy = new Date();
+      const diff = diffDays(hoy, proxDate);
+      if (diff < 0) {
+        return { type: "vencida", label: `CONSULTA VENCIDA (${Math.abs(diff)}d)`, cls: "badge-vencida" };
+      }
+      if (diff <= 7) {
+        return { type: "proxima", label: diff === 0 ? "CONTROL HOY" : `PRÓX. EN ${diff}d`, cls: "badge-proxima" };
+      }
+      return null;
+    }
+
+    function renderClinicalBadges(pac) {
+      const baseBadges = renderConditionBadges(pac);
+      const egAlert = getGestationalTrafficLight(pac);
+      const ctrlAlert = getConsultAlertBadge(pac);
+      const extra = [
+        egAlert ? `<span class="badge ${egAlert.cls}">${egAlert.label}</span>` : "",
+        ctrlAlert ? `<span class="badge ${ctrlAlert.cls}">${ctrlAlert.label}</span>` : ""
+      ].join("");
+      return baseBadges + extra;
+    }
+
+    function setQuickNextConsultDays(days) {
+      const baseInput = document.getElementById("ctrlFecha")?.value;
+      const baseDate = parseDateFlexible(baseInput) || new Date();
+      const target = addDays(baseDate, days);
+      document.getElementById("ctrlProx").value = toISOFromDate(target);
+      showToast(`Próxima consulta calculada a +${days} días (${formatDateDMY(target)})`);
+    }
+
+    function buildWhatsAppReprogramUrl(pac, mode = "reprogram") {
+      const phone = normalizeWhatsAppPhone(pac.TELEFONO);
+      if (!phone) return "";
+      const nombre = (pac.APELLIDO_Y_NOMBRE || "paciente").trim();
+      const prox = (pac.PROXIMA_CONSULTA || "").trim();
+      let msg = "";
+      if (mode === "missed") {
+        msg = `Hola ${nombre}, notamos que no pudiste asistir a tu control en el consultorio de Obstetricia del Hospital Colonia El Simbolar. Por favor respondé este mensaje para reprogramar un nuevo turno lo antes posible.`;
+      } else {
+        msg = `Hola ${nombre}, te informamos desde Obstetricia del Hospital Colonia El Simbolar una actualización en tu próxima consulta${prox ? ` (fecha prevista: ${prox})` : ""}. Confirmá por favor si te queda bien o indicanos tu disponibilidad.`;
+      }
+      return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    }
+
+    function renderConditionBadges(pac) {
+      const rsk = String(pac.RIESGO || "BAJO").toUpperCase();
+      const pacControlesObs = state.controles
+        .filter(c => c.ID_PACIENTE === pac.ID_PACIENTE || String(c.DNI || "") === String(pac.DNI || ""))
+        .map(c => c.OBSERVACIONES || "")
+        .join(" ");
+      const conds = detectConditions(`${pac.OBSERVACIONES || ""} ${pac.DESENLACE_NOTA || ""} ${pacControlesObs}`);
+
+      const rskBadge = `<span class="badge ${rsk === "ALTO" ? "badge-alto" : "badge-bajo"}">${rsk}</span>`;
+      const condBadges = conds.map(c => `<span class="badge ${c.group === "obstetrico" ? "badge-obstetrico" : "badge-clinico"}">${c.label}</span>`).join("");
+      return rskBadge + condBadges;
+    }
+
+    function renderPadron() {
+      const filtered = getFilteredPacientes();
+      const tbody = document.getElementById("padronBody");
+      const mobileBox = document.getElementById("padronMobileCards");
+
+      if (!filtered.length) {
+        const emptyHtml = `<div class="empty-state"><strong>No hay embarazadas registradas con este criterio</strong><p>Verificá el DNI, el filtro rápido o cargá una nueva embarazada.</p></div>`;
+        tbody.innerHTML = `<tr><td colspan="12">${emptyHtml}</td></tr>`;
+        mobileBox.innerHTML = emptyHtml;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => {
+        const est = String(p.ESTADO || "ACTIVA").toUpperCase();
+        return `
+          <tr>
+            <td><strong>${p.ID_PACIENTE || ""}</strong></td>
+            <td><strong>${p.DNI || ""}</strong></td>
+            <td><strong style="${isExtremeAge(p) ? "color:#dc2626;" : ""}">${p.APELLIDO_Y_NOMBRE || ""}</strong></td>
+            <td>${isExtremeAge(p) ? `<span style="color:#dc2626; font-weight:800;">${getPacienteEffectiveAge(p)}</span>` : (getPacienteEffectiveAge(p) ?? (p.EDAD || ""))}</td>
+            <td>${p.FUM || ""}</td>
+            <td>${p.FPP || ""}</td>
+            <td>${p.EG_SEMANAS ? `${p.EG_SEMANAS} sem` : ""}</td>
+            <td>${renderClinicalBadges(p)}</td>
+            <td><span class="badge ${est === "CERRADA" ? "badge-cerrada" : "badge-activa"}">${est}</span></td>
+            <td>${p.FECHA_ULTIMO_CONTROL || ""}</td>
+            <td>${p.PROXIMA_CONSULTA || ""}</td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-soft btn-sm" onclick="openDetailModal('${p.ID_PACIENTE}')">Ficha</button>
+              <button class="btn btn-primary btn-sm" onclick="quickControlForPaciente('${p.ID_PACIENTE}')">+ Nuevo Control</button>
+              ${renderWhatsAppAction(p, false)}
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      mobileBox.innerHTML = filtered.map(p => {
+        const est = String(p.ESTADO || "ACTIVA").toUpperCase();
+        return `
+          <div class="pac-mobile-card">
+            <div class="pac-mobile-top">
+              <div>
+                <div class="pac-mobile-name" style="${isExtremeAge(p) ? "color:#dc2626;" : ""}">${p.APELLIDO_Y_NOMBRE || ""}${isExtremeAge(p) ? ` · ${getPacienteEffectiveAge(p)}a` : ""}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">DNI <strong>${p.DNI || "—"}</strong> · ${p.ID_PACIENTE || ""}</div>
+              </div>
+              <span class="badge ${est === "CERRADA" ? "badge-cerrada" : "badge-activa"}">${est}</span>
+            </div>
+            <div style="margin-bottom:8px;">${renderClinicalBadges(p)}</div>
+            <div class="pac-mobile-meta">
+              <div><strong>EG:</strong> ${p.EG_SEMANAS ? `${p.EG_SEMANAS} sem` : "—"}</div>
+              <div><strong>FPP:</strong> ${p.FPP || "—"}</div>
+              <div><strong>Últ. ctrl:</strong> ${p.FECHA_ULTIMO_CONTROL || "—"}</div>
+              <div><strong>Próx.:</strong> ${p.PROXIMA_CONSULTA || "—"}</div>
+            </div>
+            <div class="pac-mobile-actions">
+              <button class="btn btn-soft btn-sm" style="flex:1;" onclick="openDetailModal('${p.ID_PACIENTE}')">Ficha / Pendientes</button>
+              <button class="btn btn-primary btn-sm" style="flex:1;" onclick="quickControlForPaciente('${p.ID_PACIENTE}')">+ Nuevo Control</button>
+              ${renderWhatsAppAction(p, true)}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function quickControlForPaciente(pacId) {
+      switchTab("controles");
+      const sel = document.getElementById("ctrlPacienteId");
+      if (sel) {
+        sel.value = pacId;
+        prefillControlFromPatient();
+      }
+      document.getElementById("ctrlEG").focus();
+    }
+
+    function toggleShowAllControles() {
+      state.showAllControles = !state.showAllControles;
+      renderControles();
+    }
+
+    function getControlSortTimestamp(ctrl, fallbackIndex) {
+      const d = parseDateFlexible(ctrl.FECHA_CONTROL);
+      if (d && !isNaN(d.getTime())) {
+        return d.getTime() * 100000 + fallbackIndex;
+      }
+      const numMatch = String(ctrl.ID_CONTROL || "").match(/(\d+)/);
+      const idNum = numMatch ? parseInt(numMatch[1], 10) : 0;
+      return idNum * 100000 + fallbackIndex;
+    }
+
+    function renderControles() {
+      const sel = document.getElementById("ctrlPacienteId");
+      const selectedPacId = sel ? sel.value : "";
+      const selectedPac = state.pacientes.find(p => p.ID_PACIENTE === selectedPacId);
+
+      const titleEl = document.getElementById("historialCtrlTitle");
+      const subEl = document.getElementById("historialCtrlSubtitle");
+      const toggleBtn = document.getElementById("btnToggleAllControles");
+
+      let baseList = state.controles.map((c, idx) => ({ ctrl: c, idx }));
+
+      if (selectedPac && !state.showAllControles) {
+        const pacDni = String(selectedPac.DNI || "").replace(/\D+/g, "");
+        baseList = baseList.filter(({ ctrl }) => {
+          const sameId = ctrl.ID_PACIENTE && ctrl.ID_PACIENTE === selectedPac.ID_PACIENTE;
+          const ctrlDni = String(ctrl.DNI || "").replace(/\D+/g, "");
+          const sameDni = pacDni && ctrlDni && pacDni === ctrlDni;
+          return sameId || sameDni;
+        });
+        if (titleEl) {
+          titleEl.textContent = `Historial Longitudinal de Controles · ${selectedPac.APELLIDO_Y_NOMBRE}`;
+        }
+        if (subEl) {
+          subEl.textContent = `DNI ${selectedPac.DNI || "—"} · ${baseList.length} control(es) ordenados del más nuevo al más viejo`;
+        }
+        if (toggleBtn) {
+          toggleBtn.style.display = "inline-flex";
+          toggleBtn.textContent = "Ver todos los controles";
+        }
+      } else {
+        if (titleEl) {
+          titleEl.textContent = "Historial Longitudinal de Controles (Todos)";
+        }
+        if (subEl) {
+          subEl.textContent = `Mostrando ${baseList.length} control(es) generales ordenados del más nuevo al más viejo`;
+        }
+        if (toggleBtn) {
+          toggleBtn.style.display = selectedPac ? "inline-flex" : "none";
+          toggleBtn.textContent = selectedPac ? `Filtrar solo ${selectedPac.APELLIDO_Y_NOMBRE}` : "Ver todos";
+        }
+      }
+
+      const q = (document.getElementById("filterCtrlSearch").value || "").trim().toLowerCase();
+      const filtered = baseList
+        .filter(({ ctrl: c }) => {
+          if (!q) return true;
+          return `${c.DNI || ""} ${c.APELLIDO_Y_NOMBRE || ""} ${c.ID_PACIENTE || ""} ${c.FECHA_CONTROL || ""} ${c.OBSERVACIONES || ""}`.toLowerCase().includes(q);
+        })
+        .sort((a, b) => getControlSortTimestamp(b.ctrl, b.idx) - getControlSortTimestamp(a.ctrl, a.idx))
+        .map(item => item.ctrl);
+
+      const tbody = document.getElementById("controlesBody");
+      if (!filtered.length) {
+        const msg = selectedPac && !state.showAllControles
+          ? `<strong>Sin controles registrados para ${selectedPac.APELLIDO_Y_NOMBRE}</strong><p>Completá el formulario superior para cargar el primer control de esta paciente.</p>`
+          : `<strong>Sin controles cargados</strong><p>Completá el formulario superior para registrar un control prenatal.</p>`;
+        tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">${msg}</div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const rsk = String(c.RIESGO || "BAJO").toUpperCase();
+        return `
+          <tr>
+            <td><strong>${c.ID_CONTROL || ""}</strong></td>
+            <td><strong>${c.FECHA_CONTROL || ""}</strong></td>
+            <td><strong>${c.DNI || ""}</strong></td>
+            <td>${c.APELLIDO_Y_NOMBRE || ""}</td>
+            <td>${c.EG_SEMANAS ? `${c.EG_SEMANAS} sem` : ""}</td>
+            <td><span class="badge ${rsk === "ALTO" ? "badge-alto" : "badge-bajo"}">${rsk}</span></td>
+            <td>${c.PROXIMA_CONSULTA || ""}</td>
+            <td>${c.OBSERVACIONES || ""}</td>
+            <td>${c.PROFESIONAL || "Diego Torres"}</td>
+            <td style="white-space:nowrap;">
+              <button type="button" class="btn btn-soft btn-sm" onclick="openEditControlModal('${c.ID_CONTROL}')">Editar</button>
+              <button type="button" class="btn btn-warn btn-sm" onclick="deleteControlRecord('${c.ID_CONTROL}')">Borrar</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function openEditControlModal(ctrlId) {
+      const ctrl = state.controles.find(c => c.ID_CONTROL === ctrlId);
+      if (!ctrl) return;
+      document.getElementById("editControlModalBody").innerHTML = `
+        <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">
+          Control <strong>${ctrl.ID_CONTROL}</strong> · ${ctrl.APELLIDO_Y_NOMBRE || ""} (DNI ${ctrl.DNI || "—"})
+        </p>
+        <div class="grid-3">
+          <div>
+            <label for="edCtrlFecha">Fecha de Control</label>
+            <input type="date" id="edCtrlFecha" value="${toISOFromDate(parseDateFlexible(ctrl.FECHA_CONTROL))}" />
+          </div>
+          <div>
+            <label for="edCtrlEG">Edad Gestacional (semanas)</label>
+            <input type="number" id="edCtrlEG" min="1" max="44" value="${ctrl.EG_SEMANAS || ""}" />
+          </div>
+          <div>
+            <label for="edCtrlRiesgo">Riesgo</label>
+            <select id="edCtrlRiesgo">
+              <option value="BAJO" ${String(ctrl.RIESGO || "BAJO").toUpperCase() === "BAJO" ? "selected" : ""}>BAJO</option>
+              <option value="ALTO" ${String(ctrl.RIESGO || "BAJO").toUpperCase() === "ALTO" ? "selected" : ""}>ALTO</option>
+            </select>
+          </div>
+          <div>
+            <label for="edCtrlProx">Próxima Consulta</label>
+            <input type="date" id="edCtrlProx" value="${toISOFromDate(parseDateFlexible(ctrl.PROXIMA_CONSULTA))}" />
+          </div>
+          <div>
+            <label for="edCtrlProf">Profesional</label>
+            <input type="text" id="edCtrlProf" value="${ctrl.PROFESIONAL || "Diego Torres"}" />
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <label for="edCtrlObs">Observaciones clínicas</label>
+          <textarea id="edCtrlObs" rows="2">${ctrl.OBSERVACIONES || ""}</textarea>
+        </div>
+        <div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end;">
+          <button type="button" class="btn btn-soft btn-sm" onclick="closeEditControlModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="saveControlEdits('${ctrl.ID_CONTROL}')">Guardar Cambios</button>
+        </div>
+      `;
+      document.getElementById("editControlModal").classList.add("open");
+    }
+
+    function closeEditControlModal() {
+      document.getElementById("editControlModal").classList.remove("open");
+    }
+
+    function recalculatePatientSummaryFromControls(pacId) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+      const related = state.controles
+        .map((c, idx) => ({ ctrl: c, idx }))
+        .filter(({ ctrl }) => ctrl.ID_PACIENTE === pacId)
+        .sort((a, b) => getControlSortTimestamp(b.ctrl, b.idx) - getControlSortTimestamp(a.ctrl, a.idx))
+        .map(x => x.ctrl);
+
+      pac.N_CONTROLES = String(related.length);
+      if (related.length > 0) {
+        const latest = related[0];
+        pac.FECHA_ULTIMO_CONTROL = latest.FECHA_CONTROL || pac.FECHA_ULTIMO_CONTROL;
+        if (latest.EG_SEMANAS) pac.EG_SEMANAS = latest.EG_SEMANAS;
+        if (latest.RIESGO) pac.RIESGO = latest.RIESGO;
+        if (latest.PROXIMA_CONSULTA) pac.PROXIMA_CONSULTA = latest.PROXIMA_CONSULTA;
+        if (latest.OBSERVACIONES) pac.OBSERVACIONES = latest.OBSERVACIONES;
+      }
+    }
+
+    async function saveControlEdits(ctrlId) {
+      const ctrl = state.controles.find(c => c.ID_CONTROL === ctrlId);
+      if (!ctrl) return;
+      const fDate = parseDateFlexible(document.getElementById("edCtrlFecha")?.value);
+      const pDate = parseDateFlexible(document.getElementById("edCtrlProx")?.value);
+      if (fDate) ctrl.FECHA_CONTROL = formatDateDMY(fDate);
+      ctrl.EG_SEMANAS = (document.getElementById("edCtrlEG")?.value || "").trim();
+      ctrl.RIESGO = document.getElementById("edCtrlRiesgo")?.value || "BAJO";
+      ctrl.PROXIMA_CONSULTA = pDate ? formatDateDMY(pDate) : "";
+      ctrl.PROFESIONAL = (document.getElementById("edCtrlProf")?.value || "").trim() || "Diego Torres";
+      ctrl.OBSERVACIONES = (document.getElementById("edCtrlObs")?.value || "").trim() || "Control prenatal";
+
+      recalculatePatientSummaryFromControls(ctrl.ID_PACIENTE);
+      saveLocalState();
+      closeEditControlModal();
+      renderAll();
+
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === ctrl.ID_PACIENTE);
+      await pushToSheets({ action: "upsertControl", control: ctrl, paciente: pac || null });
+      showToast(`Control ${ctrl.ID_CONTROL} actualizado`);
+    }
+
+    async function deleteControlRecord(ctrlId) {
+      const idx = state.controles.findIndex(c => c.ID_CONTROL === ctrlId);
+      if (idx === -1) return;
+      const [removed] = state.controles.splice(idx, 1);
+      recalculatePatientSummaryFromControls(removed.ID_PACIENTE);
+      saveLocalState();
+      renderAll();
+
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === removed.ID_PACIENTE);
+      await pushToSheets({ action: "deleteControl", controlId: ctrlId, control: removed, paciente: pac || null });
+      showToast(`Control ${ctrlId} eliminado`);
+    }
+
+    function filterControlPacienteByDni() {
+      const dniQ = (document.getElementById("ctrlBuscarDni").value || "").replace(/\D+/g, "");
+      populatePacienteSelect(dniQ);
+    }
+
+    function populatePacienteSelect(dniFilter = "") {
+      const sel = document.getElementById("ctrlPacienteId");
+      const prevSelected = sel.value;
+      let activas = state.pacientes.filter(p => String(p.ESTADO || "ACTIVA").toUpperCase() === "ACTIVA");
+      if (dniFilter) {
+        activas = activas.filter(p => String(p.DNI || "").replace(/\D+/g, "").includes(dniFilter));
+      }
+      if (!activas.length) {
+        sel.innerHTML = `<option value="">Sin embarazadas activas coincidentes</option>`;
+        renderControles();
+        return;
+      }
+      sel.innerHTML = activas.map(p => `<option value="${p.ID_PACIENTE}">${p.APELLIDO_Y_NOMBRE} · DNI ${p.DNI} (EG ${p.EG_SEMANAS || "?"} sem)</option>`).join("");
+      if (prevSelected && activas.some(p => p.ID_PACIENTE === prevSelected)) {
+        sel.value = prevSelected;
+      }
+      prefillControlFromPatient();
+    }
+
+
+    const PROTOCOLO_INICIO_EMBARAZO = [
+      {
+        id: "visita_1",
+        rango: "1ª Visita / Inicio de control",
+        minSem: 1,
+        maxSem: 44,
+        onlyFirstVisit: true,
+        items: [
+          "Confirmación del embarazo",
+          "Laboratorio de rutina",
+          "Vacuna antigripal (según vigencia)",
+          "Vacuna doble adulto (según vigencia)",
+          "Examen odontológico"
+        ]
+      },
+      {
+        id: "sem_11_12",
+        rango: "Semanas 11 a 12",
+        minSem: 11,
+        maxSem: 12,
+        items: [
+          "Ecografía obstétrica con valoración de la translucencia nucal"
+        ]
+      },
+      {
+        id: "sem_20_22",
+        rango: "Semanas 20 a 22",
+        minSem: 20,
+        maxSem: 22,
+        items: [
+          "Ecografía obstétrica con valoración morfológica"
+        ]
+      },
+      {
+        id: "sem_28",
+        rango: "Semana 28",
+        minSem: 28,
+        maxSem: 28,
+        items: [
+          "Ecocardiograma fetal"
+        ]
+      },
+      {
+        id: "sem_13_34",
+        rango: "Semanas 13 a 34",
+        minSem: 13,
+        maxSem: 34,
+        items: [
+          "Actualización de los laboratorios de rutina"
+        ]
+      },
+      {
+        id: "sem_20_34",
+        rango: "Semanas 20 a 34",
+        minSem: 20,
+        maxSem: 34,
+        items: [
+          "Papanicolaou (a partir de semana 20)",
+          "Vacuna triple bacteriana acelular"
+        ]
+      },
+      {
+        id: "sem_32_36",
+        rango: "Semanas 32 a 36",
+        minSem: 32,
+        maxSem: 36,
+        items: [
+          "Vacuna contra el virus sincicial respiratorio (según vigencia)"
+        ]
+      },
+      {
+        id: "sem_35_37",
+        rango: "Semanas 35 a 37",
+        minSem: 35,
+        maxSem: 37,
+        items: [
+          "Prueba de detección del estreptococo betahemolítico"
+        ]
+      },
+      {
+        id: "ultimo_trim",
+        rango: "Último trimestre (≥ 28 sem)",
+        minSem: 28,
+        maxSem: 42,
+        items: [
+          "Ecografía obstétrica de control"
+        ]
+      }
+    ];
+
+    function getRecommendationsForControl(egSem, pac) {
+      const egNum = Number(egSem);
+      if (!egNum || isNaN(egNum) || egNum < 1) return [];
+      const prevControlsCount = pac
+        ? state.controles.filter(c => c.ID_PACIENTE === pac.ID_PACIENTE || (pac.DNI && String(c.DNI || "") === String(pac.DNI))).length
+        : 0;
+      const isFirstControl = prevControlsCount <= 1;
+
+      const matched = [];
+      PROTOCOLO_INICIO_EMBARAZO.forEach(rule => {
+        if (rule.onlyFirstVisit) {
+          if (isFirstControl || egNum <= 12) {
+            matched.push({ rango: rule.rango, items: rule.items });
+          }
+          return;
+        }
+        if (egNum >= rule.minSem && egNum <= rule.maxSem) {
+          matched.push({ rango: rule.rango, items: rule.items });
+        }
+      });
+      return matched;
+    }
+
+    async function addSingleRecommendationToPatientPendientes(pacId, itemText) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac || !itemText) return;
+      const list = parsePendientes(pac.PENDIENTES_JSON).map(normalizePendienteEntry);
+      if (list.some(x => String(x.texto || "").toLowerCase() === itemText.toLowerCase())) {
+        showToast("Ese estudio/acción ya está en Pendientes");
+        return;
+      }
+      list.push({ texto: itemText, estado: "NO_REALIZADO" });
+      pac.PENDIENTES_JSON = JSON.stringify(list);
+      saveLocalState();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast(`Agregado a Pendientes: ${itemText}`);
+    }
+
+    async function addAllSuggestedToPatientPendientes(pacId) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+      const egNum = Number(pac.EG_SEMANAS || 0);
+      const groups = getRecommendationsForControl(egNum, pac);
+      if (!groups.length) return;
+      const list = parsePendientes(pac.PENDIENTES_JSON).map(normalizePendienteEntry);
+      let added = 0;
+      groups.forEach(g => {
+        g.items.forEach(item => {
+          if (!list.some(x => String(x.texto || "").toLowerCase() === item.toLowerCase())) {
+            list.push({ texto: item, estado: "NO_REALIZADO" });
+            added++;
+          }
+        });
+      });
+      pac.PENDIENTES_JSON = JSON.stringify(list);
+      saveLocalState();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast(added > 0 ? `${added} sugerencia(s) agregadas a Pendientes` : "Todas las sugerencias ya estaban agregadas");
+    }
+
+    function appendRecommendationToObs(itemText, btnEl) {
+      const obsEl = document.getElementById("ctrlObs");
+      const current = obsEl.value.trim();
+      const tag = `Solicitado: ${itemText}`;
+      if (!current.toLowerCase().includes(itemText.toLowerCase())) {
+        obsEl.value = current ? `${current} · ${tag}` : tag;
+      }
+      if (btnEl) btnEl.classList.add("applied");
+      showToast(`Agregado a observaciones: ${itemText}`);
+    }
+
+    function applyAllEgRecommendations() {
+      const chips = document.querySelectorAll("#egRecommendationsBox .eg-rec-chip");
+      chips.forEach(chip => {
+        const txt = chip.dataset.recText;
+        if (txt) appendRecommendationToObs(txt, chip);
+      });
+    }
+
+    function addRecommendationsToPatientPendientes() {
+      const pacId = document.getElementById("ctrlPacienteId")?.value;
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) {
+        showToast("Seleccioná una embarazada primero");
+        return;
+      }
+      const chips = document.querySelectorAll("#egRecommendationsBox .eg-rec-chip");
+      if (!chips.length) return;
+      const list = parsePendientes(pac.PENDIENTES_JSON);
+      let added = 0;
+      chips.forEach(chip => {
+        const txt = chip.dataset.recText;
+        if (txt && !list.some(x => String(x).toLowerCase() === txt.toLowerCase())) {
+          list.push(txt);
+          added++;
+        }
+      });
+      pac.PENDIENTES_JSON = JSON.stringify(list);
+      saveLocalState();
+      pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast(added > 0 ? `${added} estudio(s)/acción(es) agregados a Pendientes de la ficha` : "Ya estaban en Pendientes de la ficha");
+    }
+
+    function renderEgRecommendations() {
+      const box = document.getElementById("egRecommendationsBox");
+      if (!box) return;
+      const egVal = parseInt(document.getElementById("ctrlEG")?.value || "", 10);
+      const pacId = document.getElementById("ctrlPacienteId")?.value;
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+
+      const groups = getRecommendationsForControl(egVal, pac);
+      if (!groups.length) {
+        box.style.display = "none";
+        box.innerHTML = "";
+        return;
+      }
+
+      const obsLower = (document.getElementById("ctrlObs")?.value || "").toLowerCase();
+      const chipsHtml = groups.flatMap(g =>
+        g.items.map(item => {
+          const isApplied = obsLower.includes(item.toLowerCase());
+          const safeAttr = item.replace(/"/g, "&quot;");
+          return `<button type="button" class="eg-rec-chip ${isApplied ? "applied" : ""}" data-rec-text="${safeAttr}" onclick="appendRecommendationToObs(this.dataset.recText, this)" title="${g.rango}">+ ${item} <span style="opacity:0.7; font-weight:400;">(${g.rango})</span></button>`;
+        })
+      ).join("");
+
+      box.style.display = "block";
+      box.innerHTML = `
+        <div class="eg-rec-header">
+          <div class="eg-rec-title">Estudios y Acciones Sugeridos según EG (${egVal} sem) · Guía Inicio Embarazo</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-soft btn-sm" onclick="applyAllEgRecommendations()">+ Todos a Observaciones</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addRecommendationsToPatientPendientes()">+ Guardar en Pendientes de Ficha</button>
+          </div>
+        </div>
+        <div class="eg-rec-items">${chipsHtml}</div>
+        <div class="eg-rec-sub">Tocá cada estudio o vacuna para sumarlo a las observaciones del control o guardalo en los pendientes de la paciente.</div>
+      `;
+    }
+
+    function prefillControlFromPatient() {
+      const id = document.getElementById("ctrlPacienteId").value;
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === id);
+      state.showAllControles = false;
+      if (!pac) {
+        renderControles();
+        return;
+      }
+      if (pac.EG_SEMANAS) document.getElementById("ctrlEG").value = pac.EG_SEMANAS;
+      if (pac.RIESGO) document.getElementById("ctrlRiesgo").value = String(pac.RIESGO).toUpperCase();
+      renderEgRecommendations();
+      renderControles();
+    }
+
+    function calcularTodo() {
+      const refDate = parseDateFlexible(document.getElementById("calcRefDate").value) || new Date();
+      const fumDate = parseDateFlexible(document.getElementById("calcFum").value);
+
+      if (fumDate) {
+        const diasGest = diffDays(fumDate, refDate);
+        const fppDate = addDays(fumDate, 280);
+        document.getElementById("resEgFum").textContent = formatSemDias(diasGest);
+        document.getElementById("resEgFumDias").textContent = `Total: ${diasGest} días a la fecha de referencia`;
+        document.getElementById("resFppFum").textContent = formatDateDMY(fppDate);
+      } else {
+        document.getElementById("resEgFum").textContent = "—";
+        document.getElementById("resEgFumDias").textContent = "Sin FUM ingresada";
+        document.getElementById("resFppFum").textContent = "—";
+      }
+
+      const ecoFecha = parseDateFlexible(document.getElementById("calcEcoFecha").value);
+      const ecoSemRaw = document.getElementById("calcEcoSem").value;
+      const ecoDiasRaw = document.getElementById("calcEcoDias").value;
+
+      if (ecoFecha && ecoSemRaw !== "" && !isNaN(Number(ecoSemRaw))) {
+        const ecoSem = Math.max(0, parseInt(ecoSemRaw, 10));
+        const ecoDias = Math.min(6, Math.max(0, parseInt(ecoDiasRaw || "0", 10)));
+        const egEnEcoDias = ecoSem * 7 + ecoDias;
+        const diasTranscurridos = diffDays(ecoFecha, refDate);
+        const egActualDias = egEnEcoDias + diasTranscurridos;
+        const egActualSemEnteras = Math.floor(egActualDias / 7);
+        const egActualDiasResto = ((egActualDias % 7) + 7) % 7;
+
+        const fumEcoDate = addDays(ecoFecha, -egEnEcoDias);
+        const fppEcoDate = addDays(fumEcoDate, 280);
+
+        document.getElementById("resEgActualEco").textContent = formatSemDias(egActualDias);
+        document.getElementById("resEgActualEcoDetalle").textContent = `Fracción: ${egActualSemEnteras} + ${egActualDiasResto}/7 · ${egActualDias} días`;
+        document.getElementById("resEgEnEco").textContent = `${ecoSem} sem ${ecoDias} d`;
+        document.getElementById("resDiasTranscurridosEco").textContent = `Días desde ECO: ${diasTranscurridos} d`;
+        document.getElementById("resFumEco").textContent = formatDateDMY(fumEcoDate);
+        document.getElementById("resFppEco").textContent = formatDateDMY(fppEcoDate);
+
+        state.lastEcoCalc = {
+          egActualDias,
+          egActualSemanasRedondeadas: Math.max(1, Math.round(egActualDias / 7)),
+          egActualSemEnteras,
+          egActualDiasResto,
+          fumEcoDate,
+          fppEcoDate,
+          ecoFecha
+        };
+      } else {
+        document.getElementById("resEgActualEco").textContent = "—";
+        document.getElementById("resEgActualEcoDetalle").textContent = "Completá fecha y semanas de ECO";
+        document.getElementById("resEgEnEco").textContent = "—";
+        document.getElementById("resDiasTranscurridosEco").textContent = "Días transcurridos: —";
+        document.getElementById("resFumEco").textContent = "—";
+        document.getElementById("resFppEco").textContent = "—";
+        state.lastEcoCalc = null;
+      }
+    }
+
+    function aplicarFumANuevaPaciente() {
+      const fumDate = parseDateFlexible(document.getElementById("calcFum").value);
+      if (!fumDate) {
+        showToast("Ingresá una FUM en la calculadora primero");
+        return;
+      }
+      const refDate = parseDateFlexible(document.getElementById("calcRefDate").value) || new Date();
+      const fppDate = addDays(fumDate, 280);
+      const egSem = Math.max(1, Math.round(diffDays(fumDate, refDate) / 7));
+
+      switchTab("nueva");
+      document.getElementById("newFum").value = toISOFromDate(fumDate);
+      document.getElementById("newFpp").value = toISOFromDate(fppDate);
+      document.getElementById("newEg").value = egSem;
+      renderNewEgRecommendations();
+      openNewEgModal(egSem);
+      showToast("FUM, FPP y EG trasladados a Nueva Embarazada");
+    }
+
+    function aplicarEcoAControl() {
+      if (!state.lastEcoCalc) {
+        showToast("Primero ingresá fecha y semanas del ultrasonido");
+        return;
+      }
+      const c = state.lastEcoCalc;
+      switchTab("controles");
+      document.getElementById("ctrlEG").value = c.egActualSemanasRedondeadas;
+      renderEgRecommendations();
+      const prevObs = document.getElementById("ctrlObs").value.trim();
+      const notaEco = `EG por ECO: ${formatSemDias(c.egActualDias)} (${c.egActualDias} d) | FUM x ECO: ${formatDateDMY(c.fumEcoDate)} | FPP x ECO: ${formatDateDMY(c.fppEcoDate)}`;
+      document.getElementById("ctrlObs").value = prevObs ? `${prevObs} · ${notaEco}` : notaEco;
+      document.getElementById("ecoAplicadoMsg").textContent = `Aplicado: ${formatSemDias(c.egActualDias)}`;
+      showToast("Cálculo por ECO aplicado al control");
+    }
+
+    function aplicarEcoANuevaPaciente() {
+      if (!state.lastEcoCalc) {
+        showToast("Primero ingresá fecha y semanas del ultrasonido");
+        return;
+      }
+      const c = state.lastEcoCalc;
+      switchTab("nueva");
+      document.getElementById("newFum").value = toISOFromDate(c.fumEcoDate);
+      document.getElementById("newFpp").value = toISOFromDate(c.fppEcoDate);
+      document.getElementById("newEg").value = c.egActualSemanasRedondeadas;
+      renderNewEgRecommendations();
+      openNewEgModal(c.egActualSemanasRedondeadas);
+      showToast("FUM x ECO, FPP x ECO y EG trasladados a Nueva Embarazada");
+    }
+
+    function syncEdadFromFn() {
+      const fn = parseDateFlexible(document.getElementById("newFn").value);
+      if (!fn) return;
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fn.getFullYear();
+      const m = hoy.getMonth() - fn.getMonth();
+      if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) edad--;
+      if (edad > 0 && edad < 80) document.getElementById("newEdad").value = edad;
+    }
+
+
+    state.newPacientePendingSuggestions = [];
+
+    function getNewPacienteRecommendations(egSem) {
+      const egNum = Number(egSem);
+      if (!egNum || isNaN(egNum) || egNum < 1) return [];
+      const matched = [];
+      PROTOCOLO_INICIO_EMBARAZO.forEach(rule => {
+        if (rule.onlyFirstVisit) {
+          matched.push({ rango: rule.rango, items: rule.items });
+          return;
+        }
+        if (egNum >= rule.minSem && egNum <= rule.maxSem) {
+          matched.push({ rango: rule.rango, items: rule.items });
+        }
+      });
+      return matched;
+    }
+
+    function appendNewRecToObs(itemText, btnEl) {
+      const obsEl = document.getElementById("newObs");
+      const current = obsEl.value.trim();
+      const tag = `Solicitado: ${itemText}`;
+      if (!current.toLowerCase().includes(itemText.toLowerCase())) {
+        obsEl.value = current ? `${current} · ${tag}` : tag;
+      }
+      if (btnEl) btnEl.classList.add("applied");
+      renderNewEgRecommendations();
+      showToast(`Agregado a observaciones: ${itemText}`);
+    }
+
+    function toggleNewPacPendingSuggestion(itemText) {
+      const idx = state.newPacientePendingSuggestions.findIndex(x => x.toLowerCase() === itemText.toLowerCase());
+      if (idx >= 0) {
+        state.newPacientePendingSuggestions.splice(idx, 1);
+      } else {
+        state.newPacientePendingSuggestions.push(itemText);
+      }
+      renderNewEgRecommendations();
+      if (document.getElementById("newEgModal")?.classList.contains("open")) {
+        const egVal = parseInt(document.getElementById("newEg")?.value || "", 10);
+        if (egVal >= 1) openNewEgModal(egVal, false);
+      }
+    }
+
+    function applyAllNewEgRecommendations(alsoToPendientes = false) {
+      const egVal = parseInt(document.getElementById("newEg")?.value || "", 10);
+      const groups = getNewPacienteRecommendations(egVal);
+      if (!groups.length) return;
+      const obsEl = document.getElementById("newObs");
+      let current = obsEl.value.trim();
+      groups.forEach(g => {
+        g.items.forEach(item => {
+          const tag = `Solicitado: ${item}`;
+          if (!current.toLowerCase().includes(item.toLowerCase())) {
+            current = current ? `${current} · ${tag}` : tag;
+          }
+          if (alsoToPendientes && !state.newPacientePendingSuggestions.some(x => x.toLowerCase() === item.toLowerCase())) {
+            state.newPacientePendingSuggestions.push(item);
+          }
+        });
+      });
+      obsEl.value = current;
+      renderNewEgRecommendations();
+      if (document.getElementById("newEgModal")?.classList.contains("open")) {
+        openNewEgModal(egVal, false);
+      }
+      showToast(alsoToPendientes ? "Sugerencias agregadas a Observaciones y Pendientes de la ficha" : "Todas las sugerencias agregadas a Observaciones");
+    }
+
+    function renderNewEgRecommendations() {
+      const box = document.getElementById("newEgRecommendationsBox");
+      if (!box) return;
+      const egVal = parseInt(document.getElementById("newEg")?.value || "", 10);
+      const groups = getNewPacienteRecommendations(egVal);
+      if (!groups.length) {
+        box.style.display = "none";
+        box.innerHTML = "";
+        return;
+      }
+
+      const obsLower = (document.getElementById("newObs")?.value || "").toLowerCase();
+      const pendLower = state.newPacientePendingSuggestions.map(x => x.toLowerCase());
+      const chipsHtml = groups.flatMap(g =>
+        g.items.map(item => {
+          const inObs = obsLower.includes(item.toLowerCase());
+          const inPend = pendLower.includes(item.toLowerCase());
+          const applied = inObs || inPend;
+          const safeAttr = item.replace(/"/g, "&quot;");
+          return `<button type="button" class="eg-rec-chip ${applied ? "applied" : ""}" data-rec-text="${safeAttr}" onclick="appendNewRecToObs(this.dataset.recText, this)" title="${g.rango}">${applied ? "✓" : "+"} ${item} <span style="opacity:0.7; font-weight:400;">(${g.rango})</span></button>`;
+        })
+      ).join("");
+
+      const pendCount = state.newPacientePendingSuggestions.length;
+      box.style.display = "block";
+      box.innerHTML = `
+        <div class="eg-rec-header">
+          <div class="eg-rec-title">Estudios y Acciones Sugeridos según EG (${egVal} sem) · 1er Control / Guía Inicio Embarazo</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-soft btn-sm" onclick="openNewEgModal(${egVal})">Ver Cuadro Detallado</button>
+            <button type="button" class="btn btn-soft btn-sm" onclick="applyAllNewEgRecommendations(false)">+ Todos a Observaciones</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="applyAllNewEgRecommendations(true)">+ Obs. y Pendientes (${pendCount})</button>
+          </div>
+        </div>
+        <div class="eg-rec-items">${chipsHtml}</div>
+        <div class="eg-rec-sub">Tocá cada estudio o vacuna para sumarlo a las observaciones iniciales o abrí el cuadro detallado para seleccionarlos como pendientes.</div>
+      `;
+    }
+
+    function openNewEgModal(egSem, autoPreselect = false) {
+      const groups = getNewPacienteRecommendations(egSem);
+      if (!groups.length) return;
+      const obsLower = (document.getElementById("newObs")?.value || "").toLowerCase();
+      const pendLower = state.newPacientePendingSuggestions.map(x => x.toLowerCase());
+
+      document.getElementById("newEgModalTitle").textContent = `Sugerencias para EG ${egSem} semanas · Guía Inicio Embarazo`;
+      const sectionsHtml = groups.map(g => `
+        <div class="calc-box" style="margin-top:0; margin-bottom:10px; padding:12px 14px;">
+          <div style="font-weight:700; color:var(--primary-dark); font-size:0.84rem; margin-bottom:8px;">${g.rango}</div>
+          ${g.items.map(item => {
+            const inObs = obsLower.includes(item.toLowerCase());
+            const inPend = pendLower.includes(item.toLowerCase());
+            const safeAttr = item.replace(/"/g, "&quot;");
+            return `
+              <div class="pending-item" style="margin-bottom:6px;">
+                <span style="font-weight:500;">${item}</span>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="btn ${inObs ? "btn-primary" : "btn-soft"} btn-sm" data-rec-text="${safeAttr}" onclick="appendNewRecToObs(this.dataset.recText, this); openNewEgModal(${egSem}, false);">${inObs ? "✓ En Obs." : "+ Observaciones"}</button>
+                  <button type="button" class="btn ${inPend ? "btn-primary" : "btn-soft"} btn-sm" data-rec-text="${safeAttr}" onclick="toggleNewPacPendingSuggestion(this.dataset.recText)">${inPend ? "✓ En Pendientes" : "+ Pendiente"}</button>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `).join("");
+
+      document.getElementById("newEgModalBody").innerHTML = `
+        <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:12px;">
+          De acuerdo con la edad gestacional calculada (<strong>${egSem} semanas</strong>) y el inicio del seguimiento prenatal, estas son las acciones, vacunas y estudios recomendados:
+        </p>
+        ${sectionsHtml}
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:12px;">
+          <button type="button" class="btn btn-soft btn-sm" onclick="applyAllNewEgRecommendations(true)">Agregar Todos a Obs. y Pendientes</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="closeNewEgModal()">Continuar con la Carga</button>
+        </div>
+      `;
+      document.getElementById("newEgModal").classList.add("open");
+    }
+
+    function closeNewEgModal() {
+      document.getElementById("newEgModal").classList.remove("open");
+    }
+
+    function syncFppAndEgFromNewFum() {
+      const fum = parseDateFlexible(document.getElementById("newFum").value);
+      if (!fum) return;
+      const fpp = addDays(fum, 280);
+      document.getElementById("newFpp").value = toISOFromDate(fpp);
+      const dias = diffDays(fum, new Date());
+      const egCalc = Math.max(1, Math.round(dias / 7));
+      document.getElementById("newEg").value = egCalc;
+      renderNewEgRecommendations();
+      openNewEgModal(egCalc);
+    }
+
+    function nextPacienteId() {
+      const nums = state.pacientes.map(p => {
+        const match = String(p.ID_PACIENTE || "").match(/PAC-(\d+)/i);
+        return match ? parseInt(match[1], 10) : 0;
+      });
+      const maxNum = nums.length ? Math.max(...nums) : 0;
+      return `PAC-${String(maxNum + 1).padStart(3, "0")}`;
+    }
+
+    function nextControlId() {
+      const nums = state.controles.map(c => {
+        const match = String(c.ID_CONTROL || "").match(/CTRL-(\d+)/i);
+        return match ? parseInt(match[1], 10) : 0;
+      });
+      const maxNum = nums.length ? Math.max(...nums) : 0;
+      return `CTRL-${String(maxNum + 1).padStart(3, "0")}`;
+    }
+
+    function buildPacienteDraftFromForm() {
+      const dni = document.getElementById("newDni").value.trim();
+      const nombre = document.getElementById("newNombre").value.trim();
+      const fnDate = parseDateFlexible(document.getElementById("newFn").value);
+      const fumDate = parseDateFlexible(document.getElementById("newFum").value);
+      const fppDate = parseDateFlexible(document.getElementById("newFpp").value) || (fumDate ? addDays(fumDate, 280) : null);
+      const ultDate = parseDateFlexible(document.getElementById("newUltControl").value) || new Date();
+      const proxDate = parseDateFlexible(document.getElementById("newProxConsulta").value);
+      const egVal = document.getElementById("newEg").value || (fumDate ? Math.max(1, Math.round(diffDays(fumDate, ultDate) / 7)) : "");
+      const riesgoVal = document.getElementById("newRiesgo").value;
+      const obsVal = document.getElementById("newObs").value.trim() || "Sin observaciones";
+      const profVal = document.getElementById("newProfesional").value.trim() || "Diego Torres";
+
+      return {
+        DNI: dni,
+        APELLIDO_Y_NOMBRE: nombre,
+        FECHA_NACIMIENTO: formatDateDMY(fnDate),
+        EDAD: document.getElementById("newEdad").value || "",
+        TELEFONO: document.getElementById("newTel").value.trim(),
+        FUM: formatDateDMY(fumDate),
+        FPP: formatDateDMY(fppDate),
+        EG_SEMANAS: egVal,
+        RIESGO: riesgoVal,
+        ESTADO: "ACTIVA",
+        FECHA_ULTIMO_CONTROL: formatDateDMY(ultDate),
+        PROXIMA_CONSULTA: formatDateDMY(proxDate),
+        N_CONTROLES: "1",
+        OBSERVACIONES: obsVal,
+        PENDIENTES_JSON: JSON.stringify(state.newPacientePendingSuggestions || []),
+        DESENLACE_TIPO: "",
+        DESENLACE_FECHA: "",
+        DESENLACE_NOTA: "",
+        PROFESIONAL: profVal
+      };
+    }
+
+    async function persistNewPacienteRecord(draft, options = {}) {
+      const { closePreviousActive = false, prevPacId = null, prevDesenlaceNote = "" } = options;
+
+      if (closePreviousActive && prevPacId) {
+        const prevPac = state.pacientes.find(p => p.ID_PACIENTE === prevPacId);
+        if (prevPac) {
+          prevPac.ESTADO = "CERRADA";
+          if (!prevPac.DESENLACE_TIPO) prevPac.DESENLACE_TIPO = "Embarazo anterior cerrado por nuevo embarazo";
+          if (!prevPac.DESENLACE_FECHA) prevPac.DESENLACE_FECHA = formatDateDMY(new Date());
+          if (prevDesenlaceNote) {
+            prevPac.DESENLACE_NOTA = prevPac.DESENLACE_NOTA ? `${prevPac.DESENLACE_NOTA} · ${prevDesenlaceNote}` : prevDesenlaceNote;
+          }
+          await pushToSheets({ action: "upsertPaciente", paciente: prevPac });
+        }
+      }
+
+      const paciente = {
+        ...draft,
+        ID_PACIENTE: nextPacienteId()
+      };
+
+      const nuevoControl = {
+        ID_CONTROL: nextControlId(),
+        ID_PACIENTE: paciente.ID_PACIENTE,
+        DNI: paciente.DNI,
+        APELLIDO_Y_NOMBRE: paciente.APELLIDO_Y_NOMBRE,
+        FECHA_CONTROL: paciente.FECHA_ULTIMO_CONTROL,
+        EG_SEMANAS: paciente.EG_SEMANAS,
+        RIESGO: paciente.RIESGO,
+        PROXIMA_CONSULTA: paciente.PROXIMA_CONSULTA,
+        OBSERVACIONES: paciente.OBSERVACIONES,
+        PROFESIONAL: paciente.PROFESIONAL
+      };
+
+      const goToControl = state.continueToControlAfterCreate !== false;
+      state.continueToControlAfterCreate = true;
+
+      state.pacientes.push(paciente);
+      state.controles.push(nuevoControl);
+      saveLocalState();
+      renderAll();
+      document.getElementById("nuevaPacienteForm").reset();
+      document.getElementById("newProfesional").value = "Diego Torres";
+      state.newPacientePendingSuggestions = [];
+      renderNewEgRecommendations();
+
+      if (goToControl) {
+        quickControlForPaciente(paciente.ID_PACIENTE);
+      } else {
+        switchTab("padron");
+      }
+
+      await pushToSheets({ action: "upsertPaciente", paciente, nuevoControl });
+      showToast(goToControl
+        ? `Embarazada ${paciente.APELLIDO_Y_NOMBRE} agregada · Continuando con su control`
+        : `Embarazada ${paciente.APELLIDO_Y_NOMBRE} registrada`);
+    }
+
+    function openDupDniModal(existingList, draft) {
+      state.pendingDuplicateDraft = draft;
+      const latest = existingList[existingList.length - 1];
+      const existingRows = existingList.map(p => `
+        <div class="pending-item">
+          <div>
+            <strong>${p.ID_PACIENTE}</strong> · ${p.APELLIDO_Y_NOMBRE} · DNI <strong>${p.DNI}</strong><br/>
+            <span style="font-size:0.78rem; color:var(--text-muted);">Estado: <strong>${p.ESTADO || "ACTIVA"}</strong> · FUM: ${p.FUM || "—"} · FPP: ${p.FPP || "—"} · ${p.DESENLACE_TIPO || "Sin desenlace"}</span>
+          </div>
+          <button type="button" class="btn btn-soft btn-sm" onclick="closeDupDniModal(); openDetailModal('${p.ID_PACIENTE}')">Ver Ficha</button>
+        </div>
+      `).join("");
+
+      document.getElementById("dupDniModalBody").innerHTML = `
+        <p style="font-size:0.88rem; margin-bottom:12px;">
+          Ya existe${existingList.length > 1 ? "n" : ""} <strong>${existingList.length}</strong> registro${existingList.length > 1 ? "s" : ""} con el DNI <strong>${draft.DNI}</strong>. Podés abrir la ficha existente o registrar un <strong>nuevo embarazo de la misma paciente</strong> (generando un nuevo ID de episodio obstétrico).
+        </p>
+        <div style="margin-bottom:14px;">${existingRows}</div>
+        <div class="calc-box" style="margin-top:0; margin-bottom:14px;">
+          <h4 style="color:var(--primary-dark); margin-bottom:8px;">Registrar Nuevo Embarazo de la Misma Paciente</h4>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">
+            Se creará un nuevo registro <strong>ACTIVA</strong> con los datos de FUM/EG/riesgo ingresados y su propio historial de controles.
+          </p>
+          <label class="flag-check" style="margin-bottom:10px;">
+            <input type="checkbox" id="dupClosePrevCheck" ${String(latest.ESTADO || "").toUpperCase() === "ACTIVA" ? "checked" : ""} />
+            Cerrar episodio previo (${latest.ID_PACIENTE} · ${latest.ESTADO || "ACTIVA"}) automáticamente al abrir el nuevo embarazo
+          </label>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+            <button type="button" class="btn btn-soft btn-sm" onclick="closeDupDniModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="confirmNewPregnancySamePatient('${latest.ID_PACIENTE}')">+ Crear Nuevo Embarazo de Esta Paciente</button>
+          </div>
+        </div>
+      `;
+      document.getElementById("dupDniModal").classList.add("open");
+    }
+
+    function closeDupDniModal() {
+      document.getElementById("dupDniModal").classList.remove("open");
+      state.pendingDuplicateDraft = null;
+    }
+
+    async function confirmNewPregnancySamePatient(prevPacId) {
+      const draft = state.pendingDuplicateDraft;
+      if (!draft) return;
+      const closePrev = !!document.getElementById("dupClosePrevCheck")?.checked;
+      closeDupDniModal();
+      await persistNewPacienteRecord(draft, {
+        closePreviousActive: closePrev,
+        prevPacId,
+        prevDesenlaceNote: "Cerrado para iniciar nuevo embarazo"
+      });
+    }
+
+    async function submitNuevaPacienteSoloPadron() {
+      const form = document.getElementById("nuevaPacienteForm");
+      if (!form.reportValidity()) return;
+      state.continueToControlAfterCreate = false;
+      const draft = buildPacienteDraftFromForm();
+      const cleanDni = String(draft.DNI || "").replace(/\D+/g, "");
+      const matches = state.pacientes.filter(p => String(p.DNI || "").replace(/\D+/g, "") === cleanDni && cleanDni !== "");
+      if (matches.length > 0) {
+        openDupDniModal(matches, draft);
+        return;
+      }
+      await persistNewPacienteRecord(draft);
+    }
+
+    async function handleCreatePaciente(event) {
+      event.preventDefault();
+      state.continueToControlAfterCreate = true;
+      const draft = buildPacienteDraftFromForm();
+      const cleanDni = String(draft.DNI || "").replace(/\D+/g, "");
+      const matches = state.pacientes.filter(p => String(p.DNI || "").replace(/\D+/g, "") === cleanDni && cleanDni !== "");
+      if (matches.length > 0) {
+        openDupDniModal(matches, draft);
+        return;
+      }
+      await persistNewPacienteRecord(draft);
+    }
+
+    async function handleSaveControl(event) {
+      event.preventDefault();
+      const pacId = document.getElementById("ctrlPacienteId").value;
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) {
+        showToast("Seleccioná una embarazada válida");
+        return;
+      }
+
+      const fechaCtrl = parseDateFlexible(document.getElementById("ctrlFecha").value) || new Date();
+      const proxCtrl = parseDateFlexible(document.getElementById("ctrlProx").value);
+      const egCtrl = document.getElementById("ctrlEG").value;
+      const riesgoCtrl = document.getElementById("ctrlRiesgo").value;
+      const obsCtrl = document.getElementById("ctrlObs").value.trim() || "Control prenatal";
+      const profCtrl = document.getElementById("ctrlProfesional").value.trim() || "Diego Torres";
+
+      const nuevoControl = {
+        ID_CONTROL: nextControlId(),
+        ID_PACIENTE: pac.ID_PACIENTE,
+        DNI: pac.DNI,
+        APELLIDO_Y_NOMBRE: pac.APELLIDO_Y_NOMBRE,
+        FECHA_CONTROL: formatDateDMY(fechaCtrl),
+        EG_SEMANAS: egCtrl,
+        RIESGO: riesgoCtrl,
+        PROXIMA_CONSULTA: formatDateDMY(proxCtrl),
+        OBSERVACIONES: obsCtrl,
+        PROFESIONAL: profCtrl
+      };
+
+      pac.EG_SEMANAS = egCtrl;
+      pac.RIESGO = riesgoCtrl;
+      pac.FECHA_ULTIMO_CONTROL = nuevoControl.FECHA_CONTROL;
+      if (nuevoControl.PROXIMA_CONSULTA) pac.PROXIMA_CONSULTA = nuevoControl.PROXIMA_CONSULTA;
+      pac.OBSERVACIONES = obsCtrl;
+      pac.PROFESIONAL = profCtrl;
+      pac.N_CONTROLES = String((parseInt(pac.N_CONTROLES || "0", 10) || 0) + 1);
+
+      state.controles.push(nuevoControl);
+      saveLocalState();
+      renderAll();
+      document.getElementById("ctrlObs").value = "";
+      document.getElementById("ecoAplicadoMsg").textContent = "";
+      renderEgRecommendations();
+
+      await pushToSheets({ action: "upsertPaciente", paciente: pac, nuevoControl });
+      showToast(`Control guardado para ${pac.APELLIDO_Y_NOMBRE}`);
+    }
+
+    function getPacienteEffectiveAge(pac) {
+      if (!pac) return null;
+      const fn = parseDateFlexible(pac.FECHA_NACIMIENTO);
+      if (fn && !isNaN(fn.getTime())) {
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fn.getFullYear();
+        const m = hoy.getMonth() - fn.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) edad--;
+        if (edad > 0 && edad < 120) return edad;
+      }
+      const rawEdad = parseInt(String(pac.EDAD || "").trim(), 10);
+      return (!isNaN(rawEdad) && rawEdad > 0) ? rawEdad : null;
+    }
+
+    function isExtremeAge(pac) {
+      const edad = getPacienteEffectiveAge(pac);
+      if (edad === null) return false;
+      return edad < 15 || edad > 35;
+    }
+
+    function renderEdadTexto(pac) {
+      const edad = getPacienteEffectiveAge(pac);
+      if (edad === null) return "—";
+      if (isExtremeAge(pac)) {
+        return `<strong style="color:#dc2626; font-weight:800;" title="Edad obstétrica extrema (<15 o >35 años)">${edad} años</strong>`;
+      }
+      return `${edad} años`;
+    }
+
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = (el.style.display === "none" || !el.style.display) ? "block" : "none";
+    }
+
+    function openDetailModal(pacId) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+      state.activeModalPacId = pacId;
+      const hist = state.controles
+        .map((c, idx) => ({ ctrl: c, idx }))
+        .filter(({ ctrl: c }) => {
+          const sameId = c.ID_PACIENTE === pacId;
+          const pacDni = String(pac.DNI || "").replace(/\D+/g, "");
+          const ctrlDni = String(c.DNI || "").replace(/\D+/g, "");
+          const sameDni = pacDni && ctrlDni && pacDni === ctrlDni;
+          return sameId || sameDni;
+        })
+        .sort((a, b) => getControlSortTimestamp(b.ctrl, b.idx) - getControlSortTimestamp(a.ctrl, a.idx))
+        .map(item => item.ctrl);
+      const pendientes = parsePendientes(pac.PENDIENTES_JSON);
+
+      const edadExt = isExtremeAge(pac);
+      const edadNum = getPacienteEffectiveAge(pac);
+      const titleEl = document.getElementById("detailModalTitle");
+      if (edadExt) {
+        titleEl.innerHTML = `<span style="color:#dc2626; font-weight:800;">${pac.APELLIDO_Y_NOMBRE || "Paciente"} · DNI ${pac.DNI || "—"}</span> <span class="badge badge-alto" style="margin-left:6px; vertical-align:middle;">${edadNum} AÑOS (${edadNum < 15 ? "&lt;15" : "&gt;35"})</span>`;
+      } else {
+        titleEl.innerHTML = `<span>${pac.APELLIDO_Y_NOMBRE || "Paciente"} · DNI ${pac.DNI || "—"}</span>`;
+      }
+      const estActual = String(pac.ESTADO || "ACTIVA").toUpperCase();
+      document.getElementById("detailModalBody").innerHTML = `
+        <div class="calc-box" style="margin-top:0; margin-bottom:14px; ${edadExt ? "border-color:#fca5a5;" : ""}">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="badge ${estActual === "CERRADA" ? "badge-cerrada" : "badge-activa"}">${estActual}</span>
+              <span class="badge ${String(pac.RIESGO || "BAJO").toUpperCase() === "ALTO" ? "badge-alto" : "badge-bajo"}">RIESGO ${String(pac.RIESGO || "BAJO").toUpperCase()}</span>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="closeDetailModal(); quickControlForPaciente('${pac.ID_PACIENTE}')">+ Nuevo Control</button>
+              <button type="button" class="btn btn-soft btn-sm" onclick="toggleSection('editFichaPanel')">✎ Editar Ficha</button>
+              <button type="button" class="btn btn-warn btn-sm" onclick="toggleSection('desenlacePanel')">Estado / Desenlace</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom:10px;">
+            ${renderClinicalBadges(pac)}
+          </div>
+          <div class="grid-3">
+            <div><strong>DNI:</strong> ${pac.DNI || "—"}</div>
+            <div><strong>Fecha Nac.:</strong> ${pac.FECHA_NACIMIENTO || "—"} (${renderEdadTexto(pac)})</div>
+            <div><strong>Teléfono:</strong> ${pac.TELEFONO || "—"} ${buildWhatsAppUrl(pac) ? `
+              <a href="${buildWhatsAppUrl(pac)}" target="_blank" rel="noopener noreferrer" style="margin-left:6px; font-weight:700; color:#15803d; text-decoration:underline;">Recordatorio ↗</a>
+              <a href="${buildWhatsAppReprogramUrl(pac, "reprogram")}" target="_blank" rel="noopener noreferrer" style="margin-left:6px; font-weight:700; color:#02677d; text-decoration:underline;">Reprogramar ↗</a>
+              <a href="${buildWhatsAppReprogramUrl(pac, "missed")}" target="_blank" rel="noopener noreferrer" style="margin-left:6px; font-weight:700; color:#b45309; text-decoration:underline;">Inasistencia ↗</a>
+            ` : ""}</div>
+            <div><strong>FUM:</strong> ${pac.FUM || "—"}</div>
+            <div><strong>FPP:</strong> ${pac.FPP || "—"}</div>
+            <div><strong>EG Actual:</strong> ${pac.EG_SEMANAS ? `${pac.EG_SEMANAS} sem` : "—"}</div>
+            <div><strong>Últ. Control:</strong> ${pac.FECHA_ULTIMO_CONTROL || "—"}</div>
+            <div><strong>Próx. Consulta:</strong> ${pac.PROXIMA_CONSULTA || "—"}</div>
+            <div><strong>Profesional:</strong> ${pac.PROFESIONAL || "Diego Torres"}</div>
+          </div>
+
+          <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:0.86rem;">
+            <strong>Observaciones:</strong> ${pac.OBSERVACIONES || "—"}
+          </div>
+
+          ${(pac.DESENLACE_TIPO || pac.DESENLACE_FECHA || pac.DESENLACE_NOTA || estActual === "CERRADA") ? `
+            <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:0.85rem;">
+              <strong>Desenlace / Cierre:</strong> ${pac.DESENLACE_TIPO || "—"}${pac.DESENLACE_FECHA ? ` (${pac.DESENLACE_FECHA})` : ""}${pac.DESENLACE_NOTA ? ` — ${pac.DESENLACE_NOTA}` : ""}
+            </div>
+          ` : ""}
+        </div>
+
+        <div id="editFichaPanel" class="calc-box" style="display:none; margin-top:0; margin-bottom:14px; border-color:var(--primary);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="color:var(--primary-dark);">Editar Datos de la Ficha</h4>
+            <button type="button" class="btn btn-soft btn-sm" onclick="toggleSection('editFichaPanel')">Ocultar</button>
+          </div>
+          <div class="grid-3">
+            <div>
+              <label for="editDni">DNI *</label>
+              <input type="text" id="editDni" inputmode="numeric" value="${pac.DNI || ""}" />
+            </div>
+            <div>
+              <label for="editNombre">Apellido y Nombre *</label>
+              <input type="text" id="editNombre" value="${pac.APELLIDO_Y_NOMBRE || ""}" />
+            </div>
+            <div>
+              <label for="editFn">Fecha de Nacimiento</label>
+              <input type="date" id="editFn" value="${toISOFromDate(parseDateFlexible(pac.FECHA_NACIMIENTO))}" onchange="syncEditEdadFromFn()" />
+            </div>
+            <div>
+              <label for="editEdad">Edad (años)</label>
+              <input type="number" id="editEdad" min="10" max="65" value="${pac.EDAD || ""}" />
+            </div>
+            <div>
+              <label for="editTel">Teléfono</label>
+              <input type="text" id="editTel" value="${pac.TELEFONO || ""}" />
+            </div>
+            <div>
+              <label for="editFum">FUM</label>
+              <input type="date" id="editFum" value="${toISOFromDate(parseDateFlexible(pac.FUM))}" onchange="syncEditFppAndEgFromFum()" />
+            </div>
+            <div>
+              <label for="editFpp">FPP</label>
+              <input type="date" id="editFpp" value="${toISOFromDate(parseDateFlexible(pac.FPP))}" />
+            </div>
+            <div>
+              <label for="editEg">EG Actual (semanas)</label>
+              <input type="number" id="editEg" min="1" max="44" value="${pac.EG_SEMANAS || ""}" />
+            </div>
+            <div>
+              <label for="editRiesgo">Riesgo</label>
+              <select id="editRiesgo">
+                <option value="BAJO" ${String(pac.RIESGO).toUpperCase() === "BAJO" ? "selected" : ""}>BAJO</option>
+                <option value="ALTO" ${String(pac.RIESGO).toUpperCase() === "ALTO" ? "selected" : ""}>ALTO</option>
+              </select>
+            </div>
+            <div>
+              <label for="editUltControl">Fecha Último Control</label>
+              <input type="date" id="editUltControl" value="${toISOFromDate(parseDateFlexible(pac.FECHA_ULTIMO_CONTROL))}" />
+            </div>
+            <div>
+              <label for="editProx">Próxima Consulta</label>
+              <input type="date" id="editProx" value="${toISOFromDate(parseDateFlexible(pac.PROXIMA_CONSULTA))}" />
+            </div>
+            <div>
+              <label for="editProfesional">Profesional</label>
+              <input type="text" id="editProfesional" value="${pac.PROFESIONAL || "Diego Torres"}" />
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <label for="editObs">Observaciones</label>
+            <input type="text" id="editObs" value="${pac.OBSERVACIONES || ""}" />
+          </div>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button class="btn btn-primary btn-sm" onclick="savePacienteEdits('${pac.ID_PACIENTE}')">Guardar Cambios de Ficha</button>
+            <span style="font-size:0.78rem; color:var(--text-muted);">Al cambiar FUM se sugiere FPP (+280 días) y EG actual.</span>
+          </div>
+        </div>
+
+        <div id="desenlacePanel" class="calc-box" style="display:none; margin-top:0; margin-bottom:14px; border-color:#d97706;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="color:var(--primary-dark);">Estado y Desenlace Obstétrico</h4>
+            <button type="button" class="btn btn-soft btn-sm" onclick="toggleSection('desenlacePanel')">Ocultar</button>
+          </div>
+          <div class="grid-3">
+            <div>
+              <label for="editEstado">Estado</label>
+              <select id="editEstado">
+                <option value="ACTIVA" ${estActual === "ACTIVA" ? "selected" : ""}>ACTIVA</option>
+                <option value="CERRADA" ${estActual === "CERRADA" ? "selected" : ""}>CERRADA</option>
+              </select>
+            </div>
+            <div>
+              <label for="editDesenlaceTipo">Tipo de Desenlace</label>
+              <input type="text" id="editDesenlaceTipo" value="${pac.DESENLACE_TIPO || ""}" placeholder="Parto, Cesárea, Puerperio, Pase..." />
+            </div>
+            <div>
+              <label for="editDesenlaceFecha">Fecha Desenlace</label>
+              <input type="date" id="editDesenlaceFecha" value="${toISOFromDate(parseDateFlexible(pac.DESENLACE_FECHA))}" />
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <label for="editDesenlaceNota">Nota de Desenlace / Cierre</label>
+            <input type="text" id="editDesenlaceNota" value="${pac.DESENLACE_NOTA || ""}" placeholder="Detalle del parto, lugar de atención o motivo de cierre..." />
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn btn-warn btn-sm" onclick="saveDesenlace('${pac.ID_PACIENTE}')">Actualizar Estado / Desenlace</button>
+          </div>
+        </div>
+
+        ${(() => {
+          const normList = pendientes.map(normalizePendienteEntry);
+          const realizadosCount = normList.filter(i => i.estado === "REALIZADO").length;
+          const noRealizadosCount = normList.length - realizadosCount;
+          return `
+        <div class="calc-box" style="margin-top:0; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+            <h4 style="color:var(--primary-dark);">Pendientes / Estudios / Interconsultas (${normList.length})</h4>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; font-size:0.75rem;">
+              <span class="badge badge-bajo">Realizados: ${realizadosCount}</span>
+              <span class="badge badge-clinico">No realizados: ${noRealizadosCount}</span>
+            </div>
+          </div>
+          <div id="pendientesList">
+            ${normList.length ? normList.map((item, idx) => {
+              const isDone = item.estado === "REALIZADO";
+              return `
+              <div class="pending-item ${isDone ? "done-item" : "undone-item"}">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span class="badge ${isDone ? "badge-bajo" : "badge-clinico"}">${isDone ? "REALIZADO" : "NO REALIZADO"}</span>
+                  <span class="pending-label" style="font-weight:500;">${item.texto}</span>
+                </div>
+                <div class="status-toggle-group">
+                  <button type="button" class="btn btn-sm ${isDone ? "btn-status-on" : "btn-soft"}" onclick="setPendienteEstado('${pac.ID_PACIENTE}', ${idx}, 'REALIZADO')">✓ Realizado</button>
+                  <button type="button" class="btn btn-sm ${!isDone ? "btn-status-off" : "btn-soft"}" onclick="setPendienteEstado('${pac.ID_PACIENTE}', ${idx}, 'NO_REALIZADO')">✕ No realizado</button>
+                  <button type="button" class="btn btn-soft btn-sm" onclick="removePendiente('${pac.ID_PACIENTE}', ${idx})" title="Quitar ítem">Quitar</button>
+                </div>
+              </div>
+            `;
+            }).join("") : `<div style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">Sin ítems cargados</div>`}
+          </div>
+          ${(() => {
+            const egPac = Number(pac.EG_SEMANAS || 0);
+            const sugGroups = getRecommendationsForControl(egPac, pac);
+            if (!sugGroups.length) return "";
+            const pendLower = normList.map(x => String(x.texto || "").toLowerCase());
+            const sugChips = sugGroups.flatMap(g =>
+              g.items.map(item => {
+                const already = pendLower.includes(item.toLowerCase());
+                const safeItem = item.replace(/"/g, "&quot;");
+                return `<button type="button" class="eg-rec-chip ${already ? "applied" : ""}" data-item="${safeItem}" onclick="addSingleRecommendationToPatientPendientes('${pac.ID_PACIENTE}', this.dataset.item)" title="${g.rango}">${already ? "✓" : "+"} ${item} <span style="opacity:0.7; font-weight:400;">(${g.rango})</span></button>`;
+              })
+            ).join("");
+            return `
+              <div style="margin-top:10px; padding:10px 12px; background:#f0f9ff; border:1px solid #bae6fd; border-left:4px solid var(--primary); border-radius:10px;">
+                <div class="eg-collapse-header" onclick="toggleSection('fichaSugerenciasEgBody')">
+                  <strong style="font-size:0.82rem; color:var(--primary-dark);">▾ Sugerencias según EG (${egPac} sem) · Guía Inicio Embarazo</strong>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap;" onclick="event.stopPropagation()">
+                    <button type="button" class="btn btn-soft btn-sm" onclick="addAllSuggestedToPatientPendientes('${pac.ID_PACIENTE}')">+ Agregar todas</button>
+                    <button type="button" class="btn btn-soft btn-sm" onclick="toggleSection('fichaSugerenciasEgBody')">Mostrar / Ocultar</button>
+                  </div>
+                </div>
+                <div id="fichaSugerenciasEgBody" class="eg-collapse-body" style="display:none;">
+                  <div class="eg-rec-items">${sugChips}</div>
+                </div>
+              </div>
+            `;
+          })()}
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <input type="text" id="newPendienteText" placeholder="Ej. Laboratorio 3° trim, ECO obstétrica, interconsulta..." />
+            <button class="btn btn-soft btn-sm" onclick="addPendiente('${pac.ID_PACIENTE}')">+ Agregar</button>
+          </div>
+        </div>`;
+        })()}
+
+        <h4 style="margin-bottom:8px; color:var(--primary-dark);">Controles Registrados (${hist.length})</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Fecha</th><th>EG</th><th>Riesgo</th><th>Observaciones</th></tr>
+            </thead>
+            <tbody>
+              ${hist.length ? hist.map(h => `<tr><td>${h.FECHA_CONTROL}</td><td>${h.EG_SEMANAS} sem</td><td>${h.RIESGO}</td><td>${h.OBSERVACIONES}</td></tr>`).join("") : `<tr><td colspan="4">Sin controles registrados</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      `;
+      document.getElementById("detailModal").classList.add("open");
+    }
+
+    function syncEditEdadFromFn() {
+      const fn = parseDateFlexible(document.getElementById("editFn")?.value);
+      if (!fn) return;
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fn.getFullYear();
+      const m = hoy.getMonth() - fn.getMonth();
+      if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) edad--;
+      if (edad > 0 && edad < 80) document.getElementById("editEdad").value = edad;
+    }
+
+    function syncEditFppAndEgFromFum() {
+      const fum = parseDateFlexible(document.getElementById("editFum")?.value);
+      if (!fum) return;
+      const fpp = addDays(fum, 280);
+      document.getElementById("editFpp").value = toISOFromDate(fpp);
+      const dias = diffDays(fum, new Date());
+      document.getElementById("editEg").value = Math.max(1, Math.round(dias / 7));
+    }
+
+    async function savePacienteEdits(pacId) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+
+      const prevDni = pac.DNI;
+      const prevNombre = pac.APELLIDO_Y_NOMBRE;
+
+      const nuevoDni = (document.getElementById("editDni")?.value || "").trim();
+      const nuevoNombre = (document.getElementById("editNombre")?.value || "").trim();
+      if (!nuevoDni || !nuevoNombre) {
+        showToast("DNI y Apellido y Nombre son obligatorios");
+        return;
+      }
+
+      pac.DNI = nuevoDni;
+      pac.APELLIDO_Y_NOMBRE = nuevoNombre;
+
+      const fnVal = parseDateFlexible(document.getElementById("editFn")?.value);
+      pac.FECHA_NACIMIENTO = fnVal ? formatDateDMY(fnVal) : "";
+
+      const edadVal = (document.getElementById("editEdad")?.value || "").trim();
+      pac.EDAD = edadVal;
+
+      pac.TELEFONO = (document.getElementById("editTel")?.value || "").trim();
+
+      const fumVal = parseDateFlexible(document.getElementById("editFum")?.value);
+      pac.FUM = fumVal ? formatDateDMY(fumVal) : "";
+
+      const fppVal = parseDateFlexible(document.getElementById("editFpp")?.value);
+      pac.FPP = fppVal ? formatDateDMY(fppVal) : (fumVal ? formatDateDMY(addDays(fumVal, 280)) : "");
+
+      const egVal = (document.getElementById("editEg")?.value || "").trim();
+      if (egVal !== "") pac.EG_SEMANAS = egVal;
+
+      pac.RIESGO = document.getElementById("editRiesgo").value;
+
+      const ultVal = parseDateFlexible(document.getElementById("editUltControl")?.value);
+      if (ultVal) pac.FECHA_ULTIMO_CONTROL = formatDateDMY(ultVal);
+
+      const proxRaw = document.getElementById("editProx")?.value || "";
+      const proxVal = parseDateFlexible(proxRaw);
+      pac.PROXIMA_CONSULTA = proxRaw ? formatDateDMY(proxVal) : "";
+
+      const profVal = (document.getElementById("editProfesional")?.value || "").trim();
+      if (profVal) pac.PROFESIONAL = profVal;
+
+      pac.OBSERVACIONES = (document.getElementById("editObs")?.value || "").trim() || "Sin observaciones";
+
+      if (prevDni !== pac.DNI || prevNombre !== pac.APELLIDO_Y_NOMBRE) {
+        state.controles.forEach(c => {
+          if (c.ID_PACIENTE === pac.ID_PACIENTE || String(c.DNI || "") === String(prevDni || "")) {
+            c.DNI = pac.DNI;
+            c.APELLIDO_Y_NOMBRE = pac.APELLIDO_Y_NOMBRE;
+          }
+        });
+      }
+
+      saveLocalState();
+      renderAll();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast("Ficha actualizada y sincronizada");
+    }
+
+    function normalizePendienteEntry(entry) {
+      if (typeof entry === "string") {
+        return { texto: entry, estado: "NO_REALIZADO" };
+      }
+      if (entry && typeof entry === "object") {
+        const est = String(entry.estado || (entry.realizado ? "REALIZADO" : "NO_REALIZADO")).toUpperCase();
+        return {
+          texto: String(entry.texto || entry.label || ""),
+          estado: est === "REALIZADO" ? "REALIZADO" : "NO_REALIZADO"
+        };
+      }
+      return { texto: "", estado: "NO_REALIZADO" };
+    }
+
+    async function setPendienteEstado(pacId, index, estado) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+      const list = parsePendientes(pac.PENDIENTES_JSON).map(normalizePendienteEntry);
+      if (!list[index]) return;
+      list[index].estado = estado === "REALIZADO" ? "REALIZADO" : "NO_REALIZADO";
+      pac.PENDIENTES_JSON = JSON.stringify(list);
+      saveLocalState();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast(list[index].estado === "REALIZADO" ? "Marcado como realizado" : "Marcado como no realizado");
+    }
+
+    async function addPendiente(pacId) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      const txt = (document.getElementById("newPendienteText").value || "").trim();
+      if (!pac || !txt) return;
+      const list = parsePendientes(pac.PENDIENTES_JSON).map(normalizePendienteEntry);
+      list.push({ texto: txt, estado: "NO_REALIZADO" });
+      pac.PENDIENTES_JSON = JSON.stringify(list);
+      saveLocalState();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast("Pendiente agregado como no realizado");
+    }
+
+    async function removePendiente(pacId, index) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+      const list = parsePendientes(pac.PENDIENTES_JSON).map(normalizePendienteEntry);
+      list.splice(index, 1);
+      pac.PENDIENTES_JSON = JSON.stringify(list);
+      saveLocalState();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast("Ítem eliminado de la lista");
+    }
+
+    async function saveDesenlace(pacId) {
+      const pac = state.pacientes.find(p => p.ID_PACIENTE === pacId);
+      if (!pac) return;
+      pac.ESTADO = document.getElementById("editEstado").value;
+      pac.DESENLACE_TIPO = document.getElementById("editDesenlaceTipo").value.trim();
+      const dFecha = parseDateFlexible(document.getElementById("editDesenlaceFecha").value);
+      pac.DESENLACE_FECHA = formatDateDMY(dFecha);
+      pac.DESENLACE_NOTA = document.getElementById("editDesenlaceNota").value.trim();
+      saveLocalState();
+      renderAll();
+      openDetailModal(pacId);
+      await pushToSheets({ action: "upsertPaciente", paciente: pac });
+      showToast("Estado y desenlace guardados");
+    }
+
+    function exportCsvBackup() {
+      const headers = ["ID_PACIENTE","DNI","APELLIDO_Y_NOMBRE","FECHA_NACIMIENTO","EDAD","TELEFONO","FUM","FPP","EG_SEMANAS","RIESGO","ESTADO","FECHA_ULTIMO_CONTROL","PROXIMA_CONSULTA","N_CONTROLES","OBSERVACIONES","DESENLACE_TIPO","DESENLACE_FECHA","DESENLACE_NOTA","PROFESIONAL"];
+      const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const lines = [headers.join(",")];
+      state.pacientes.forEach(p => {
+        lines.push(headers.map(h => esc(p[h])).join(","));
+      });
+      const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `padron_obstetrico_2027_${todayISO()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Respaldo CSV descargado");
+    }
+
+    function closeDetailModal() {
+      document.getElementById("detailModal").classList.remove("open");
+      state.activeModalPacId = null;
+    }
+
+    function openSheetsModal() {
+      document.getElementById("cfgScriptUrl").value = state.config.scriptUrl;
+      document.getElementById("cfgApiKey").value = state.config.apiKey;
+      document.getElementById("sheetsModal").classList.add("open");
+    }
+
+    function closeSheetsModal() {
+      document.getElementById("sheetsModal").classList.remove("open");
+    }
+
+    async function saveSheetsConfig() {
+      state.config.scriptUrl = document.getElementById("cfgScriptUrl").value.trim() || DEFAULT_SCRIPT_URL;
+      state.config.apiKey = document.getElementById("cfgApiKey").value.trim() || DEFAULT_API_KEY;
+      saveLocalState();
+      closeSheetsModal();
+      await syncFromSheets();
+    }
+
+    async function syncFromSheets() {
+      if (!state.config.scriptUrl) {
+        setSyncStatus("warn", "Sin URL");
+        return;
+      }
+      setSyncStatus("warn", "Sincronizando...");
+      try {
+        const url = `${state.config.scriptUrl}?key=${encodeURIComponent(state.config.apiKey)}&t=${Date.now()}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.ok) {
+          throw new Error(data.error || "Error al leer Google Sheets");
+        }
+        state.pacientes = Array.isArray(data.pacientes) ? data.pacientes : [];
+        state.controles = Array.isArray(data.controles) ? data.controles : [];
+        saveLocalState();
+        renderAll();
+        setSyncStatus("ok", `Sheets (${state.pacientes.length})`);
+        showToast("Sincronizado con Google Sheets");
+      } catch (err) {
+        setSyncStatus("err", "Modo local");
+        showToast(`Aviso: ${err.message}`);
+      }
+    }
+
+    function enqueueSyncItem(bodyObj) {
+      state.syncQueue.push({
+        id: "Q-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+        createdAt: new Date().toISOString(),
+        payload: bodyObj
+      });
+      saveLocalState();
+      updateQueueBadge();
+    }
+
+    async function pushToSheets(bodyObj, fromQueue = false) {
+      if (!state.config.scriptUrl) return;
+      setSyncStatus("warn", "Guardando...");
+      try {
+        if (!navigator.onLine) {
+          throw new Error("Sin conexión");
+        }
+        await fetch(state.config.scriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ ...bodyObj, key: state.config.apiKey })
+        });
+        if (state.syncQueue.length > 0 && !fromQueue) {
+          setSyncStatus("warn", `Guardado (${state.syncQueue.length} en cola)`);
+        } else {
+          setSyncStatus("ok", "Guardado");
+        }
+      } catch (err) {
+        if (!fromQueue) {
+          enqueueSyncItem(bodyObj);
+        }
+        setSyncStatus("err", `Pendiente (${state.syncQueue.length})`);
+      }
+    }
+
+    async function flushSyncQueue() {
+      if (!state.config.scriptUrl || !state.syncQueue.length) {
+        updateQueueBadge();
+        return;
+      }
+      setSyncStatus("warn", `Enviando ${state.syncQueue.length}...`);
+      const remaining = [];
+      for (const item of state.syncQueue) {
+        try {
+          if (!navigator.onLine) throw new Error("Sin conexión");
+          await fetch(state.config.scriptUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ ...item.payload, key: state.config.apiKey })
+          });
+        } catch (e) {
+          remaining.push(item);
+        }
+      }
+      state.syncQueue = remaining;
+      saveLocalState();
+      if (remaining.length === 0) {
+        setSyncStatus("ok", `Sheets (${state.pacientes.length})`);
+        showToast("Todos los cambios pendientes fueron enviados");
+      } else {
+        setSyncStatus("err", `Pendiente (${remaining.length})`);
+        showToast(`Quedan ${remaining.length} cambio(s) pendientes`);
+      }
+    }
+
+    function renderAll() {
+      renderKPIs();
+      renderPadron();
+      populatePacienteSelect((document.getElementById("ctrlBuscarDni")?.value || "").replace(/\D+/g, ""));
+      renderControles();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const hoy = todayISO();
+      document.getElementById("calcRefDate").value = hoy;
+      document.getElementById("ctrlFecha").value = hoy;
+      document.getElementById("newUltControl").value = hoy;
+
+      loadLocalState();
+      renderAll();
+      calcularTodo();
+      renderEgRecommendations();
+      syncFromSheets();
+    });
+    window.addEventListener("online", () => {
+      if (state.syncQueue.length > 0) {
+        flushSyncQueue();
+      }
+    });
+  </script>
+</body>
+</html>
