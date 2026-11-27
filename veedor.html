@@ -184,6 +184,11 @@
       background: #fff; border-radius: 14px; max-width: 560px; width: 100%; padding: 20px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
+    
+    .b-termino { background: #e0f2fe; color: #0369a1; }
+    .b-prolongada { background: #fee2e2; color: #b91c1c; font-weight: 800; }
+    .b-pretermino { background: #f1f5f9; color: #475569; }
+
     @media (max-width: 760px) {
       .desktop-wrap { display: none; }
       .mobile-cards { display: block; }
@@ -249,6 +254,8 @@
         <button type="button" class="chip-btn active" data-mode="TODOS" onclick="setFilterMode('TODOS')">Todas las activas</button>
         <button type="button" class="chip-btn" data-mode="RETRASO" onclick="setFilterMode('RETRASO')">Solo retraso / ausencia</button>
         <button type="button" class="chip-btn" data-mode="PROXIMAS" onclick="setFilterMode('PROXIMAS')">Vencen en ≤ 7 días</button>
+        <button type="button" class="chip-btn" data-mode="TERMINO" onclick="setFilterMode('TERMINO')">A término (≥ 37s)</button>
+        <button type="button" class="chip-btn" data-mode="LIMITE_41" onclick="setFilterMode('LIMITE_41')">Límite ≥ 41s</button>
         <button type="button" class="chip-btn" data-mode="SIN_TEL" onclick="setFilterMode('SIN_TEL')">Sin teléfono</button>
       </div>
 
@@ -259,6 +266,8 @@
               <th>DNI</th>
               <th>Apellido y Nombre</th>
               <th>EG</th>
+              <th>Término</th>
+              <th>Riesgo</th>
               <th>Últ. Control</th>
               <th>Próx. Consulta</th>
               <th>Estado al Visualizar</th>
@@ -366,6 +375,26 @@
       return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
     }
 
+
+    function evalTermStatus(pac) {
+      const eg = Number(pac.EG_SEMANAS || 0);
+      if (!eg || isNaN(eg)) {
+        return { kind: "SIN_EG", isTerm: false, isCrit: false, label: "SIN EG", cls: "b-sinfecha" };
+      }
+      if (eg >= 41) {
+        return { kind: "CRIT_41", isTerm: true, isCrit: true, label: `≥41s LÍMITE (${eg}s)`, cls: "b-prolongada" };
+      }
+      if (eg >= 37) {
+        return { kind: "TERMINO", isTerm: true, isCrit: false, label: `A TÉRMINO (${eg}s)`, cls: "b-termino" };
+      }
+      return { kind: "NO_TERMINO", isTerm: false, isCrit: false, label: `NO TÉRMINO (${eg}s)`, cls: "b-pretermino" };
+    }
+
+    function renderRiskBadge(pac) {
+      const rsk = String(pac.RIESGO || "BAJO").toUpperCase();
+      return `<span class="badge ${rsk === "ALTO" ? "b-alto" : "b-bajo"}">${rsk}</span>`;
+    }
+
     function setFilterMode(mode) {
       filterMode = mode;
       document.querySelectorAll(".chip-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
@@ -393,13 +422,15 @@
       document.getElementById("kpiAlDia").textContent = cntAlDia;
 
       const rows = activas
-        .map(p => ({ p, st: evalScheduleStatus(p) }))
-        .filter(({ p, st }) => {
+        .map(p => ({ p, st: evalScheduleStatus(p), term: evalTermStatus(p) }))
+        .filter(({ p, st, term }) => {
           if (dniQ && !String(p.DNI || "").replace(/\D+/g, "").includes(dniQ)) return false;
           if (nomQ && !String(p.APELLIDO_Y_NOMBRE || "").toLowerCase().includes(nomQ)) return false;
           if (rskQ !== "TODOS" && String(p.RIESGO || "BAJO").toUpperCase() !== rskQ) return false;
           if (filterMode === "RETRASO" && st.kind !== "RETRASO") return false;
           if (filterMode === "PROXIMAS" && st.kind !== "PROXIMA") return false;
+          if (filterMode === "TERMINO" && !term.isTerm) return false;
+          if (filterMode === "LIMITE_41" && !term.isCrit) return false;
           if (filterMode === "SIN_TEL" && normalizePhone(p.TELEFONO) !== "") return false;
           return true;
         })
@@ -409,12 +440,12 @@
       const mobile = document.getElementById("veedorMobile");
 
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-muted);">No hay pacientes que coincidan con el filtro seleccionado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--text-muted);">No hay pacientes que coincidan con el filtro seleccionado.</td></tr>`;
         mobile.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Sin pacientes para mostrar.</div>`;
         return;
       }
 
-      tbody.innerHTML = rows.map(({ p, st }) => {
+      tbody.innerHTML = rows.map(({ p, st, term }) => {
         const waUrl = buildWhatsAppLink(p, st);
         const waBtn = waUrl
           ? `<a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn ${st.kind === "RETRASO" ? "btn-wa-alert" : "btn-wa"}">${st.kind === "RETRASO" ? "Avisar Retraso WA" : "WhatsApp"}</a>`
@@ -424,6 +455,8 @@
             <td><strong>${p.DNI || "—"}</strong></td>
             <td><strong>${p.APELLIDO_Y_NOMBRE || "—"}</strong></td>
             <td>${p.EG_SEMANAS ? `${p.EG_SEMANAS} sem` : "—"}</td>
+            <td><span class="badge ${term.cls}">${term.label}</span></td>
+            <td>${renderRiskBadge(p)}</td>
             <td>${p.FECHA_ULTIMO_CONTROL || "—"}</td>
             <td><strong>${p.PROXIMA_CONSULTA || "—"}</strong></td>
             <td><span class="badge ${st.cls}">${st.label}</span></td>
@@ -433,7 +466,7 @@
         `;
       }).join("");
 
-      mobile.innerHTML = rows.map(({ p, st }) => {
+      mobile.innerHTML = rows.map(({ p, st, term }) => {
         const waUrl = buildWhatsAppLink(p, st);
         const waBtn = waUrl
           ? `<a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn ${st.kind === "RETRASO" ? "btn-wa-alert" : "btn-wa"}" style="width:100%;">${st.kind === "RETRASO" ? "Avisar Retraso por WhatsApp" : "Enviar WhatsApp"}</a>`
@@ -444,7 +477,11 @@
               <strong>${p.APELLIDO_Y_NOMBRE || "—"}</strong>
               <span class="badge ${st.cls}">${st.label}</span>
             </div>
-            <div style="font-size:0.78rem; color:var(--text-muted);">DNI ${p.DNI || "—"} · Tel: ${p.TELEFONO || "—"}</div>
+            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="badge ${term.cls}">${term.label}</span>
+              ${renderRiskBadge(p)}
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">DNI ${p.DNI || "—"} · Tel: ${p.TELEFONO || "—"}</div>
             <div class="m-grid">
               <div><strong>EG:</strong> ${p.EG_SEMANAS ? `${p.EG_SEMANAS} sem` : "—"}</div>
               <div><strong>Últ. control:</strong> ${p.FECHA_ULTIMO_CONTROL || "—"}</div>
